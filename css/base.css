@@ -34,6 +34,11 @@ body {
   isolation: isolate;              /* keeps the z-index: -1 layer inside this box */
   background: var(--paper);
   min-height: 100vh;               /* at least as tall as the window */
+  /* The pencil lines run a few pixels PAST the edges of the things they outline.
+     Without this, they made the page wider than the window, which toggled a
+     scrollbar on and off and made everything redraw ("jitter"). "clip" cuts off
+     anything sticking out sideways, without turning the box into a scroll area. */
+  overflow-x: clip;
 }
 .paper::after {                    /* ::after makes an extra layer with no extra HTML */
   content: "";
