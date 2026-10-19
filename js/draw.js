@@ -130,6 +130,7 @@ let uid = 0;   // a counter so each element gets its own number
 function draw(el) {
   const w = el.offsetWidth, h = el.offsetHeight;   // the element's size in pixels
   if (w < 3 || h < 1) return;                      // hidden or empty: nothing to draw
+  el.__w = w; el.__h = h;                          // remember the size we drew at (see the ResizeObserver below)
   if (!el.__n) el.__n = ++uid;
   const shape = el.dataset.drawn;
   const seed = hashString(el.dataset.seed || ('e' + el.__n));
@@ -248,7 +249,13 @@ function drawAll() {
   document.querySelectorAll('[data-drawn]').forEach(draw);
   drawIcons();
 }
-const resizer = new ResizeObserver(entries => entries.forEach(e => draw(e.target)));
+/* Redraw only if the size REALLY changed. The observer also fires when it first
+   starts watching; redrawing then would be wasted work, and a redraw that
+   changes the size would loop forever. */
+const resizer = new ResizeObserver(entries => entries.forEach(e => {
+  const el = e.target;
+  if (el.offsetWidth !== el.__w || el.offsetHeight !== el.__h) draw(el);
+}));
 function watchAll() { document.querySelectorAll('[data-drawn]').forEach(el => resizer.observe(el)); }
 
 /* Wait for the fonts (they change element sizes), then draw. */
