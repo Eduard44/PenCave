@@ -1,0 +1,32 @@
+/* =====================================================================
+   contents.css
+   The Contents page: the lesson list, the "coming soon" volumes and the
+   tool tiles. Pencil lines and dashed boxes are drawn by draw.js.
+   ===================================================================== */
+.contents { max-width: 720px; }
+.toc-volume { margin: 8px 0 10px; }
+.contents .page-intro { margin-bottom: 18px; }
+
+/* ---- Lesson rows ---- */
+.toc { list-style: none; margin: 0 0 36px; padding: 0; }
+.toc-row { position: relative; display: flex; align-items: center; justify-content: space-between;
+           gap: 16px; padding: 12px 4px 14px; flex-wrap: wrap; }
+.toc-link { display: inline-flex; align-items: baseline; gap: 16px; font-size: 20px; font-weight: 700; }
+.toc-n { min-width: 1.2em; }
+.toc-rule { position: absolute; left: 0; right: 0; bottom: 0; height: 8px; }
+
+/* ---- Later volumes: dashed, grey, readable ---- */
+.toc-later { position: relative; padding: 18px 22px; margin-bottom: 20px; }
+.toc-later h2 { color: var(--locked); margin-bottom: 4px; }
+
+/* ---- Tools ---- */
+.tool-tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-top: 6px; }
+.tool-tile { position: relative; padding: 16px 18px; }
+.tool-tile h3 { color: var(--locked); margin-bottom: 4px; }
+.tools-note { margin-top: 14px; }
+.foot-items { margin-top: 40px; }
+
+/* Phone: less side padding in the boxes. */
+@container (max-width: 640px) {
+  .toc-later { padding: 14px 16px; }
+}

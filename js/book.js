@@ -52,18 +52,12 @@ function render() {
   const content = document.getElementById('page-content');
   content.replaceChildren();                       // clear the old page
 
-  /* The Contents page is built in a later step. For now it is a plain stub,
-     so the "Contents" and "skip" links have somewhere to go. */
+  /* The Contents page (the hub). It is not a book page: no ribbon, no footer. */
   if (location.hash === '#contents') {
     showBookParts(false);
     markSeen();
     document.title = 'Contents · PenCave';
-    const back = make('a', '', 'Back to Lesson 1');
-    back.href = '#l1p1';
-    const para = make('p');
-    para.append(back);
-    content.append(make('h1', 'page-title', 'Contents'),
-                   make('p', 'page-intro', 'The contents page is built in a later step.'), para);
+    content.append(buildContents());               // built in contents.js
     turn.prev = turn.next = null;                  // no page turning here
     drawAll(); watchAll();
     return;
@@ -165,7 +159,11 @@ function render() {
      the Collect screen do not exist yet, so for now it is shown but inactive. */
   const last = n === total;
   const nextOff = last || firstScreen;               // inactive on the last page, hidden on the first screen
-  next.querySelector('span').textContent = last ? 'Next lesson: ' + lesson.next : 'Next';
+  /* On the last page the lesson name is wrapped in .hide-phone, so a phone shows
+     just "Next lesson" and the label never wraps onto two lines. */
+  const nextLabel = next.querySelector('span');
+  nextLabel.textContent = last ? 'Next lesson' : 'Next';
+  if (last) nextLabel.append(make('span', 'hide-phone', ': ' + lesson.next));
   next.classList.toggle('is-off', nextOff);
   next.setAttribute('aria-disabled', nextOff ? 'true' : 'false');
   next.setAttribute('aria-hidden', firstScreen ? 'true' : 'false');   // gone from view AND from screen readers
