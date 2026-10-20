@@ -1,0 +1,98 @@
+/* =====================================================================
+   base.css
+   The plain foundations every page shares: the page itself, the paper
+   grain, and the text styles. Colours and sizes come from tokens.css
+   (we read them with var(--name)).
+   ===================================================================== */
+
+/* "box-sizing: border-box" makes a box's width include its padding and
+   border. Without it, sizes are harder to predict. Applies to everything (*). */
+* { box-sizing: border-box; }
+
+/* Stops phones from making text bigger on their own when turned sideways. */
+html { -webkit-text-size-adjust: 100%; }
+
+/* The page itself: paper colour, graphite text, our font. */
+body {
+  margin: 0;                       /* browsers add a small gap by default; remove it */
+  background: var(--paper);
+  color: var(--graphite);
+  font-family: var(--font);
+  font-size: var(--size-body);
+  line-height: 1.55;               /* space between lines of text */
+}
+
+/* ---------------------------------------------------------------------
+   THE PAPER (grain)
+   Any element with the class "paper" gets a faint grain laid over it.
+   The grain is a tiny SVG noise picture written in code, so there is no
+   image file to load. It sits UNDER the text (z-index: -1), so text is
+   never textured. pointer-events: none lets clicks pass straight through.
+   --------------------------------------------------------------------- */
+.paper {
+  position: relative;              /* lets the grain layer be placed inside this box */
+  isolation: isolate;              /* keeps the z-index: -1 layer inside this box */
+  background: var(--paper);
+  min-height: 100vh;               /* at least as tall as the window */
+  /* The pencil lines run a few pixels PAST the edges of the things they outline.
+     Without this, they made the page wider than the window, which toggled a
+     scrollbar on and off and made everything redraw ("jitter"). "clip" cuts off
+     anything sticking out sideways, without turning the box into a scroll area. */
+  overflow-x: clip;
+}
+.paper::after {                    /* ::after makes an extra layer with no extra HTML */
+  content: "";
+  position: absolute;
+  inset: 0;                        /* stretch to all four edges */
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.18;                   /* grain "B": the chosen strength */
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.16  0 0 0 0 0.18  0 0 0 0 0.20  3.2 0 0 0 -1.2'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+/* Test switch ?nograin (see draw.js): hides the paper grain. */
+.no-grain .paper::after { display: none; }
+
+/* ---------------------------------------------------------------------
+   TEXT STYLES
+   --------------------------------------------------------------------- */
+h1, h2, h3, h4, p { margin: 0; }   /* spacing is set by us, per layout, later */
+
+/* clamp(min, preferred, max): heading 1 is 40px on a wide screen and
+   shrinks to 30px on a phone. */
+h1 { font-size: clamp(30px, 5vw, 40px); line-height: 1.15; font-weight: 700; }
+h2 { font-size: 26px; line-height: 1.25; font-weight: 700; }
+h3 { font-size: 20px; line-height: 1.3;  font-weight: 700; }
+
+/* "ch" is the width of one character, so 62ch is about 62 characters per
+   line, a comfortable length to read. */
+p { max-width: 62ch; }
+
+/* Small notes and labels: never under 16px, readable grey. */
+.note { font-size: var(--size-note); line-height: 1.5; color: var(--locked); }
+
+/* The small bold label above a heading, e.g. "Lesson 1 · Welcome and how to practise". */
+.eyebrow { font-size: var(--size-note); font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; }
+
+/* The HTML "hidden" attribute must always win, even over our display rules. */
+[hidden] { display: none !important; }
+
+/* Links: underlined, and the underline thickens on hover, so we never
+   rely on colour alone. */
+a {
+  color: var(--graphite);
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 4px;
+}
+a:hover { text-decoration-thickness: 3px; }
+
+/* The keyboard focus ring: shows where you are when using Tab. Graphite,
+   3px, set off from the element (blue would be too faint to see). */
+:focus-visible { outline: 3px solid var(--graphite); outline-offset: 4px; }
+
+/* Hides something on screen but keeps it for screen readers. */
+.sr-only {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap;
+}
