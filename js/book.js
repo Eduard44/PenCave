@@ -150,34 +150,46 @@ function render() {
   const next = document.getElementById('next');
   document.getElementById('count').firstChild.textContent = 'Page ' + n + ' of ' + total;
 
-  /* Previous: hidden on the first page (the space stays, so Next does not jump). */
-  prev.classList.toggle('is-off', n === 1);
-  prev.setAttribute('aria-hidden', n === 1 ? 'true' : 'false');
-  prev.tabIndex = n === 1 ? -1 : 0;
-  prev.href = placeLink(place.lesson, Math.max(n - 1, 1));
-
-  /* Next: on the last page it becomes "Next lesson: [name]". That page and
-     the Collect screen do not exist yet, so for now it is shown but inactive. */
+  /* Where do Previous and Next lead? Within a lesson, one page back or on. At the
+     edges they cross into the neighbouring lesson:
+       Previous on page 1  ->  the LAST page of the lesson before
+       Next on the last page -> page 1 of the lesson after
+     (When the Collect screen is built in Step 7 it will sit in that last step.) */
   const last = n === total;
-  const nextOff = last || firstScreen;               // inactive on the last page, hidden on the first screen
-  /* On the last page the lesson name is wrapped in .hide-phone, so a phone shows
-     just "Next lesson" and the label never wraps onto two lines. */
+  const lessonBefore = window.PENCAVE_LESSONS[place.lesson - 1];
+  const lessonAfter = window.PENCAVE_LESSONS[place.lesson + 1];
+  let prevHref = null, nextHref = null;                  // null = no link (button hidden or off)
+  if (n > 1) prevHref = placeLink(place.lesson, n - 1);
+  else if (lessonBefore) prevHref = placeLink(place.lesson - 1, lessonBefore.pages.length);
+  if (!last) nextHref = placeLink(place.lesson, n + 1);
+  else if (lessonAfter) nextHref = placeLink(place.lesson + 1, 1);
+  else nextHref = '#contents';                           // the last lesson: back to the Contents
+
+  /* Previous: hidden when there is nowhere to go (the space stays, so Next does not jump). */
+  prev.classList.toggle('is-off', !prevHref);
+  prev.setAttribute('aria-hidden', prevHref ? 'false' : 'true');
+  prev.tabIndex = prevHref ? 0 : -1;
+  if (prevHref) prev.href = prevHref; else prev.removeAttribute('href');
+
+  /* Next: on the last page it says "Next lesson: [name]". On a phone the name is
+     wrapped in .hide-phone, so the label stays on one line. After the very last
+     lesson it says "Contents". On the first screen the Start button replaces it. */
   const nextLabel = next.querySelector('span');
-  nextLabel.textContent = last ? 'Next lesson' : 'Next';
-  if (last) nextLabel.append(make('span', 'hide-phone', ': ' + lesson.next));
-  next.classList.toggle('is-off', nextOff);
-  next.setAttribute('aria-disabled', nextOff ? 'true' : 'false');
+  nextLabel.textContent = last ? (lessonAfter ? 'Next lesson' : 'Contents') : 'Next';
+  if (last && lessonAfter) nextLabel.append(make('span', 'hide-phone', ': ' + lesson.next));
+  next.classList.toggle('is-off', firstScreen);
+  next.removeAttribute('aria-disabled');
   next.setAttribute('aria-hidden', firstScreen ? 'true' : 'false');   // gone from view AND from screen readers
   next.tabIndex = firstScreen ? -1 : 0;
-  if (nextOff) next.removeAttribute('href'); else next.href = placeLink(place.lesson, n + 1);
+  if (firstScreen) next.removeAttribute('href'); else next.href = nextHref;
 
   /* The bookmark ribbon fills from the top as you move through the lesson. */
   const ribbon = document.getElementById('ribbon');
   ribbon.dataset.value = n / total;
 
   /* Remember where we are, so the arrow keys know where to go. */
-  turn.prev = n > 1 ? placeLink(place.lesson, n - 1) : null;
-  turn.next = n < total ? placeLink(place.lesson, n + 1) : null;
+  turn.prev = prevHref;
+  turn.next = nextHref;
 
   /* Draw the pencil borders for the new page. */
   drawAll();
