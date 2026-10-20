@@ -104,7 +104,7 @@ function render() {
 
   const grid = make('div', 'lesson-grid');
   const frames = make('div', 'frames');
-  page.frames.forEach((f, i) => {
+  (page.frames || []).forEach((f, i) => {      // a page may have no frames (Guided try, Your turn...)
     const fig = make('figure', 'frame');
     const art = make('div', 'art');
     art.dataset.drawn = 'box';                      // draw.js puts a pencil box round it
@@ -114,7 +114,11 @@ function render() {
     frames.append(fig);
   });
   const left = make('div');   // the drawings column
-  left.append(frames);
+  if (frames.children.length) left.append(frames);
+  /* Other page types (see beats.js): the page's "type" picks a builder.
+     No type means a plain steps page (frames only). */
+  const builder = BEATS[page.type];
+  if (builder) left.append(builder(page, place.lesson, n));
   grid.append(left);
 
   /* The margin column: notes beside the drawing (under it on a phone). */
