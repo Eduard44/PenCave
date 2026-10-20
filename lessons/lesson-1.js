@@ -17,6 +17,7 @@
         type     optional. Leave out for a steps page. Or one of:
                    'try'      needs  steps: ['...', ...]
                    'turn'     needs  exercises: [{ title, text, easier, harder }]
+                   'practice' needs  count, hint, figure: { art, caption }  (the task is the intro)
                    'reflect'  needs  question, lookFirst: { heading, text }, boxLabel
                    'next'     needs nothing extra (just title and intro)
         intro    a few sentences: what we are making and why
@@ -90,6 +91,15 @@ window.PENCAVE_LESSONS[1] = {
         { title: '[Exercise 2 name]', text: '[YOUR TEXT HERE]', easier: '[YOUR TEXT HERE]', harder: '[YOUR TEXT HERE]' },
         { title: '[Exercise 3 name]', text: '[YOUR TEXT HERE]', easier: '[YOUR TEXT HERE]', harder: '[YOUR TEXT HERE]' }
       ],
+      notes: [{ heading: '[Margin note heading]', text: '[YOUR TEXT HERE]' }]
+    },
+    {
+      type: 'practice',                              // Practice: repeat it, counted (not every lesson has one)
+      title: '[YOUR TEXT HERE: Practice heading]',
+      intro: '[YOUR TEXT HERE: the task in a few lines. Name the repetition, for example draw ten lines, then ten more.]',
+      count: 5,                                      // how many blank pages to tick off
+      hint: '[YOUR TEXT HERE: a short line, for example tick each page as you fill it.]',
+      figure: { art: 3, caption: '[YOUR TEXT HERE: what a full page looks like]' },
       notes: [{ heading: '[Margin note heading]', text: '[YOUR TEXT HERE]' }]
     },
     {

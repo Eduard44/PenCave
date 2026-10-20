@@ -66,6 +66,15 @@ window.PENCAVE_LESSONS[6] = {
       notes: [{ heading: '[Margin note heading]', text: '[YOUR TEXT HERE]' }]
     },
     {
+      type: 'practice',                              // Practice: repeat it, counted (not every lesson has one)
+      title: '[YOUR TEXT HERE: Practice heading]',
+      intro: '[YOUR TEXT HERE: the task in a few lines. Name the repetition, for example draw ten lines, then ten more.]',
+      count: 5,                                      // how many blank pages to tick off
+      hint: '[YOUR TEXT HERE: a short line, for example tick each page as you fill it.]',
+      figure: { art: 3, caption: '[YOUR TEXT HERE: what a full page looks like]' },
+      notes: [{ heading: '[Margin note heading]', text: '[YOUR TEXT HERE]' }]
+    },
+    {
       type: 'reflect',                               // Reflect: one question + Look first
       title: '[YOUR TEXT HERE: Reflect heading]',
       intro: '[YOUR TEXT HERE]',
