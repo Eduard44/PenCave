@@ -18,6 +18,15 @@
      data-value  = 0 to 1 (bar and ribbon: how full)
    ===================================================================== */
 
+/* ---------- Test switches (for tracking down display problems) ----------
+   Add one to the address, like  .../pencave/?nofilter   and reload.
+     ?nofilter  turns off the pencil grain on lines
+     ?nograin   turns off the grain on the paper
+     ?nodraw    turns off ALL hand-drawn lines (plain borders show instead)
+   They change nothing for normal visitors. */
+const switches = new URLSearchParams(location.search);
+if (switches.has('nograin')) document.documentElement.classList.add('no-grain');
+
 /* ---------- Tidiness ----------
    0 = sketchy (a faint second pass and pencil grain), 1 = clean.
    Later, this will come from how many lessons the learner has finished. */
@@ -116,7 +125,7 @@ function circleD(cx, cy, r, seed, amp) {
    Text is NEVER drawn through this filter. */
 function grainFilter(id, w, h, seedNum) {
   const t = tidy();
-  if (t >= 0.999) return '';
+  if (t >= 0.999 || switches.has('nofilter')) return '';
   const a = (2.4 * (1 - t)).toFixed(3), b = (-0.55 * (1 - t) + t).toFixed(3);
   return '<filter id="' + id + '" filterUnits="userSpaceOnUse" x="-6" y="-6" width="' + (w + 12) + '" height="' + (h + 12) + '">' +
     '<feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="2" seed="' + seedNum + '" result="n"/>' +
@@ -245,6 +254,7 @@ function drawIcons() {
    The ResizeObserver redraws an element whenever its size changes
    (turning a phone sideways, for example). */
 function drawAll() {
+  if (switches.has('nodraw')) return;   // test switch: draw nothing
   document.documentElement.classList.add('drawn-ready');   // tells CSS to hide the plain fallback border
   document.querySelectorAll('[data-drawn]').forEach(draw);
   drawIcons();
@@ -256,7 +266,7 @@ const resizer = new ResizeObserver(entries => entries.forEach(e => {
   const el = e.target;
   if (el.offsetWidth !== el.__w || el.offsetHeight !== el.__h) draw(el);
 }));
-function watchAll() { document.querySelectorAll('[data-drawn]').forEach(el => resizer.observe(el)); }
+function watchAll() { if (switches.has('nodraw')) return; document.querySelectorAll('[data-drawn]').forEach(el => resizer.observe(el)); }
 
 /* Wait for the fonts (they change element sizes), then draw. */
-document.fonts.ready.then(() => { drawAll(); watchAll(); });
+document.fonts.ready.then(() => { if (!switches.has('nodraw')) { drawAll(); watchAll(); } });
