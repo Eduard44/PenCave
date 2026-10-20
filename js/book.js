@@ -72,6 +72,7 @@ function render() {
   const total = lesson.pages.length;
   const n = Math.min(Math.max(place.page, 1), total);
   const page = lesson.pages[n - 1];
+  saveVisit(place.lesson, n, total);                 // remember where we are (visit.js), for the Contents dots
   /* Is this the very first screen? Lesson 1, page 1, and a visitor who has not been here before. */
   const firstScreen = place.lesson === 1 && n === 1 && !hasSeen();
   if (!(place.lesson === 1 && n === 1)) markSeen();   // turning past page 1 counts as "been here"

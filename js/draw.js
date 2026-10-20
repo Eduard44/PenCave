@@ -179,6 +179,11 @@ function draw(el) {
   } else if (shape === 'ring') {
     /* A circle, such as the avatar. */
     const r = Math.min(w, h) / 2 - 1.5;
+    /* data-fill="solid" makes a filled dot; data-fill="paper" a dot that hides what is behind it
+       (used for the empty dots on the Contents path, so the line does not show through). */
+    if (el.dataset.fill === 'solid' || el.dataset.fill === 'paper') {
+      under += '<circle cx="' + w / 2 + '" cy="' + h / 2 + '" r="' + (r - 0.3).toFixed(1) + '" fill="' + (el.dataset.fill === 'solid' ? COLORS.graphite : COLORS.paper) + '"/>';
+    }
     strokes += pen(circleD(w / 2, h / 2, r, seed, Math.min(0.9, r * 0.1 + 0.3)));
     strokes += ghost(circleD(w / 2, h / 2, r + 0.5, seed + 500, Math.min(1, r * 0.12 + 0.3)));
   } else if (shape === 'rule' || shape === 'vrule') {
