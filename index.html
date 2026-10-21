@@ -18,6 +18,7 @@
   <link rel="stylesheet" href="css/lesson.css">
   <link rel="stylesheet" href="css/beats.css">
   <link rel="stylesheet" href="css/contents.css">
+  <link rel="stylesheet" href="css/collect.css">
 </head>
 <body>
   <!-- "paper" = the grey paper and grain. "screen" = the box the phone layout measures. -->
@@ -58,13 +59,21 @@
     </nav>
   </div>
 
+  <!-- THE COLLECT BOX. A built-in <dialog>: hidden until collect.js opens it.
+       The pencil border and paper fill sit on the inner div (the dialog itself
+       must stay free to be centred by the browser). collect.js fills the inside. -->
+  <dialog class="collect-box" id="collect" aria-label="Collect your points">
+    <div id="collect-body" data-drawn="box" data-fill="paper" data-seed="collect-box"></div>
+  </dialog>
+
   <!-- Scripts go last, so the page exists before they run. -->
   <script src="js/draw.js"></script>
   <script src="js/art.js"></script>
   <script src="js/beats.js"></script> <!-- the page types: Guided try, Your turn, Reflect -->
 
-  <script src="js/visit.js"></script> <!-- remembers where the reader has been -->
+  <script src="js/progress.js"></script> <!-- saved progress, points and levels -->
   <script src="js/contents.js"></script> <!-- the Contents page -->
+  <script src="js/collect.js"></script> <!-- the Collect box -->
   <!-- Lesson data: one file per lesson. Lessons 2 to 6 are placeholders for now. -->
   <script src="lessons/lesson-1.js"></script>
   <script src="lessons/lesson-2.js"></script>

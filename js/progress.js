@@ -110,6 +110,21 @@ function levelInfo(points) {
   };
 }
 
+/* ---------- Tidiness of the pencil lines ----------
+   The lines start sketchy (style C) and settle toward clean (style A) as the
+   reader puts in effort. Two ways, as the owner asked:
+     1. Slowly: every level reached tidies the lines one step (levels 1 to 5
+        give steps 0 to 4 of 5). Points come from effort, so repeating pays.
+     2. Fully: once EVERY lesson in the book has been finished, the lines are
+        fully clean (step 5). Opening the book again then looks like style A.
+   It is never announced. The same value is used on every page, so the look
+   does not jump around while you move through the book. */
+function inkLevel() {
+  const lessons = Object.keys(window.PENCAVE_LESSONS).map(Number);
+  if (lessons.length && lessons.every(n => state.done.includes(n))) return 5;
+  return levelInfo(state.points).level - 1;
+}
+
 /* ---------- Visits ----------
    noteDay(): the first visit on a new day pays 3 points (never on the very first day).
    noteVisit(): remember the bookmark; reaching the last page finishes the lesson. */
