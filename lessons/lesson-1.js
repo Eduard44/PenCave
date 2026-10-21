@@ -18,8 +18,8 @@
                    'try'      needs  steps: ['...', ...]
                    'turn'     needs  exercises: [{ title, text, easier, harder }]
                    'practice' needs  count, hint, figure: { art, caption }  (the task is the intro)
-                   'reflect'  needs  question, lookFirst: { heading, text }, boxLabel
-                   'next'     needs nothing extra (just title and intro)
+                   'reflect'  needs  question, boxLabel, lookFirst: { heading, text, caption }
+                   'next'     needs  why (the title and intro are yours; the next-lesson button is automatic)
         intro    a few sentences: what we are making and why
         frames   the drawn step frames: { art, caption }   (optional on non-steps pages)
                    art: 1, 2 or 3 (placeholder drawings for now), or 'mistake'
@@ -107,13 +107,14 @@ window.PENCAVE_LESSONS[1] = {
       title: '[YOUR TEXT HERE: Reflect heading]',
       intro: '[YOUR TEXT HERE]',
       question: '[YOUR TEXT HERE: one short question]',
-      lookFirst: { heading: '[Look first]', text: '[YOUR TEXT HERE: study a real object or drawing and name why it works.]' },
+      lookFirst: { heading: '[Look first]', text: '[YOUR TEXT HERE: study a real object or drawing and name why it works.]', caption: '[YOUR TEXT HERE: what to look at]' },
       boxLabel: '[YOUR TEXT HERE: label for the answer box]'
     },
     {
       type: 'next',                                 // Next: what comes next and why
-      title: '[YOUR TEXT HERE: Next heading]',
-      intro: '[YOUR TEXT HERE: what comes next and why it builds on this lesson.]'
+      title: '[YOUR TEXT HERE: Next page heading, for example Line work finished]',
+      intro: '[YOUR TEXT HERE: a line or two on what you did in this lesson.]',
+      why: '[YOUR TEXT HERE: why the next lesson follows from this one.]'
     }
   ]
 };

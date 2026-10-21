@@ -21,6 +21,16 @@
    minmax(0, 1fr) lets the column shrink instead of overflowing. */
 .lesson-grid { display: grid; grid-template-columns: minmax(0, 1fr) 230px; gap: 0 28px; }
 
+/* A page with no margin notes uses the full width. */
+.lesson-grid.no-margin { grid-template-columns: minmax(0, 1fr); }
+
+/* The first screen: words and Start on the left, one drawing on the right. */
+.first-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 400px); gap: 0 48px; align-items: start; }
+.first-left .page-intro { margin-bottom: 0; }
+.first-right { margin: 0; }
+.first-right .art { aspect-ratio: 1 / 1.05; width: 100%; }
+.first-right .art svg { width: 100%; height: 100%; display: block; }
+
 /* The step frames sit in a row of three. */
 .frames { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; align-content: start; }
 .frame { margin: 0; }
@@ -59,6 +69,9 @@
    the divider turns horizontal, the ribbon hangs below the bar. */
 @container (max-width: 640px) {
   .lesson-grid { grid-template-columns: minmax(0, 1fr); }
+  /* First screen on a phone: drawing first, then the words and Start. */
+  .first-grid { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  .first-right { order: -1; max-width: 300px; }
   .frames { gap: 16px; }   /* a little room so the pencil boxes do not touch */
   .margin-col { padding-left: 0; padding-top: 24px; margin-top: 20px; }
   .margin-col .vrule { left: 0; right: 0; top: 0; bottom: auto; width: auto; height: 8px; }

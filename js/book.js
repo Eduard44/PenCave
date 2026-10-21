@@ -95,9 +95,10 @@ function render() {
   }
   content.append(make('p', 'eyebrow', firstScreen ? lesson.volume : 'Lesson ' + lesson.number + ' · ' + lesson.title));
   content.append(make('h1', 'page-title', page.title));
-  if (page.intro) content.append(make('p', 'page-intro', page.intro));
+  if (page.intro && !firstScreen) content.append(make('p', 'page-intro', page.intro));   // on the first screen the intro sits in the left column, below
 
   const grid = make('div', 'lesson-grid');
+  grid.classList.toggle('no-margin', !(page.notes && page.notes.length));   // no notes: the page uses the full width
   const frames = make('div', 'frames');
   (page.frames || []).forEach((f, i) => {      // a page may have no frames (Guided try, Your turn...)
     const fig = make('figure', 'frame');
@@ -132,17 +133,34 @@ function render() {
     grid.append(aside);
   }
   if (page.rest) grid.append(make('p', 'note rest-note', page.rest));
-  content.append(grid);
+  if (!firstScreen) content.append(grid);
 
-  /* The big Start button: first screen only. It replaces Next. */
+  /* THE FIRST SCREEN (wireframe 3): words and the big Start button on the left, ONE
+     main drawing on the right (the page's last frame). On a phone the drawing comes
+     first, then the words, then Start. Start replaces Next. */
   if (firstScreen) {
+    const fg = make('div', 'first-grid');
+    const words = make('div', 'first-left');
+    if (page.intro) words.append(make('p', 'page-intro', page.intro));
     const start = make('a', 'btn primary big start', 'Start');
     start.href = placeLink(place.lesson, 2);
     start.dataset.drawn = 'box';
     start.dataset.fill = 'solid';
     start.dataset.seed = 'start';
     start.dataset.markSeen = '';
-    content.append(start);
+    words.append(start);
+    fg.append(words);
+    const main = (page.frames || []).slice(-1)[0];
+    if (main) {
+      const fig = make('figure', 'frame first-right');
+      const art = make('div', 'art');
+      art.dataset.drawn = 'box';
+      art.dataset.seed = 'first-art';
+      art.innerHTML = stepArt(main.art, place.lesson * 1300);   // our own SVG, not user text
+      fig.append(art);
+      fg.append(fig);
+    }
+    content.append(fg);
   }
 
   /* ---- the footer: Previous, count, Next ---- */

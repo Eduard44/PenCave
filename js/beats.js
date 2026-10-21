@@ -6,7 +6,7 @@
      'turn'      Your turn: open exercise cards, side by side, each with a tick
      'practice'  Practice: counted pages to tick off as you fill them
      'reflect'   Reflect: one question, a "Look first" prompt, a plain text box
-     'next'      Next: what comes next and why (just words, no extra builder)
+     'next'      Next: what comes next and why, a big button, a small dot path
 
    Each builder below receives the page data and returns ONE element.
    book.js puts that element in the left column of the page.
@@ -126,14 +126,17 @@ const BEATS = {
     return wrap;
   },
 
-  /* REFLECT: Data: question, lookFirst: { heading, text }, boxLabel.
+  /* REFLECT (wireframe 4C): two halves with a pencil line between.
+     Left: the question and a plain "room to think" box. Right: Look first, with a
+     drawn box for a real object or drawing to study.
+     Data: question, boxLabel, lookFirst: { heading, text, caption, art (optional) }
      The text box is plain and NOT saved yet (the journal comes in Step 7). */
   reflect(page, lesson, n) {
     const wrap = make('div', 'reflect');
-    wrap.append(make('h2', '', page.question));
-    if (page.lookFirst) {
-      wrap.append(make('h3', '', page.lookFirst.heading), make('p', '', page.lookFirst.text));
-    }
+
+    /* Left half: Reflect */
+    const left = make('div', 'reflect-left');
+    left.append(make('h2', '', page.question));
     /* A textarea cannot hold a drawn SVG, so the pencil border goes on a wrapper. */
     const box = make('div', 'reflect-box');
     box.dataset.drawn = 'box';
@@ -142,9 +145,75 @@ const BEATS = {
     label.htmlFor = 'reflect-text';
     const area = make('textarea');
     area.id = 'reflect-text';
-    area.rows = 5;
+    area.rows = 6;
     box.append(label, area);
-    wrap.append(box);
+    left.append(box);
+    wrap.append(left);
+
+    /* The line between the halves (it turns horizontal on a phone). */
+    const mid = make('span', 'reflect-rule');
+    mid.dataset.drawn = 'rule';
+    mid.dataset.seed = 'reflect-mid';
+    wrap.append(mid);
+
+    /* Right half: Look first */
+    const look = page.lookFirst;
+    if (look) {
+      const right = make('div', 'reflect-right');
+      right.append(make('h3', '', look.heading), make('p', '', look.text));
+      const fig = make('figure', 'frame');
+      const art = make('div', 'art');
+      art.dataset.drawn = 'box';
+      art.dataset.seed = 'look' + lesson + '-' + n;
+      art.innerHTML = stepArt(look.art || 1, (lesson * 100 + n * 10) * 17);   // placeholder drawing; yours replaces it later
+      fig.append(art);
+      if (look.caption) fig.append(make('figcaption', '', look.caption));
+      right.append(fig);
+      wrap.append(right);
+    }
+    return wrap;
+  },
+
+  /* NEXT (wireframe 4D): what comes next and why, a big button to the next lesson,
+     and a small path of dots (the same idea as the Contents page).
+     Data: why (a few words on why the next lesson follows). The page title and intro
+     are yours: for example "Line work finished" and a line about what you did.
+     (The "+10 points saved" tag from the wireframe waits for points, Step 7.) */
+  next(page, lesson, n) {
+    const lessons = window.PENCAVE_LESSONS;
+    const here = lessons[lesson];
+    const after = lessons[lesson + 1];
+    const wrap = make('div', 'next-page');
+
+    /* Left: what is next, why, and the big button. */
+    const left = make('div', 'next-left');
+    left.append(make('h2', '', 'Next: ' + here.next));
+    if (page.why) left.append(make('p', '', page.why));
+    const go = make('a', 'btn primary big next-go');
+    go.href = after ? placeLink(lesson + 1, 1) : '#contents';
+    go.dataset.drawn = 'box';
+    go.dataset.fill = 'solid';
+    go.dataset.seed = 'next-go';
+    go.append(after ? 'Next lesson: ' + here.next : 'Back to Contents');
+    const arrow = make('i', 'icon');
+    arrow.dataset.icon = 'arrow-right';
+    go.append(arrow);
+    left.append(go);
+    wrap.append(left);
+
+    /* Right: three dots. This lesson (finished, filled), the next one (ringed), the one after (empty). */
+    const path = make('ol', 'toc mini-toc');
+    const line = make('span', 'toc-line');
+    line.dataset.drawn = 'rule'; line.dataset.seed = 'mini-line'; line.dataset.weight = '2';
+    path.append(line);
+    [[lesson, true, false], [lesson + 1, false, true], [lesson + 2, false, false]].forEach(([num, done, ring]) => {
+      const l = lessons[num];
+      if (!l) return;
+      const row = make('li', 'toc-row');
+      row.append(makeDot(done, ring), make('span', 'toc-link', l.title));
+      path.append(row);
+    });
+    wrap.append(path);
     return wrap;
   }
 };

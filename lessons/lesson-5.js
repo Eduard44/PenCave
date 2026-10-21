@@ -79,13 +79,14 @@ window.PENCAVE_LESSONS[5] = {
       title: '[YOUR TEXT HERE: Reflect heading]',
       intro: '[YOUR TEXT HERE]',
       question: '[YOUR TEXT HERE: one short question]',
-      lookFirst: { heading: '[Look first]', text: '[YOUR TEXT HERE: study a real object or drawing and name why it works.]' },
+      lookFirst: { heading: '[Look first]', text: '[YOUR TEXT HERE: study a real object or drawing and name why it works.]', caption: '[YOUR TEXT HERE: what to look at]' },
       boxLabel: '[YOUR TEXT HERE: label for the answer box]'
     },
     {
       type: 'next',                                 // Next: what comes next and why
-      title: '[YOUR TEXT HERE: Next heading]',
-      intro: '[YOUR TEXT HERE: what comes next and why it builds on this lesson.]'
+      title: '[YOUR TEXT HERE: Next page heading, for example Line work finished]',
+      intro: '[YOUR TEXT HERE: a line or two on what you did in this lesson.]',
+      why: '[YOUR TEXT HERE: why the next lesson follows from this one.]'
     }
   ]
 };
