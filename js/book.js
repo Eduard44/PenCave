@@ -6,7 +6,7 @@
    WHERE THE READER IS is kept in the address bar after the #, like
    index.html#l1p2 = lesson 1, page 2. That way the browser's Back button
    works, a page can be bookmarked, and no extra storage is needed.
-   (The bookmark and progress are saved separately: see progress.js.)
+   (Saving progress between visits comes in a later step.)
    ===================================================================== */
 
 /* A tiny helper: make an element, give it a class and some text.
@@ -47,8 +47,6 @@ function showBookParts(on) {
 
 /* Build and show the page the address bar asks for. */
 function render() {
-  noteDay();                                       // progress.js: a new day pays 3 points
-  updateBar();                                     // the top bar shows the saved level and points
   const place = readPlace();
   const lesson = window.PENCAVE_LESSONS[place.lesson];
   const content = document.getElementById('page-content');
@@ -57,7 +55,6 @@ function render() {
   /* The Contents page (the hub). It is not a book page: no ribbon, no footer. */
   if (location.hash === '#contents') {
     showBookParts(false);
-    ink.level = 0;                                 // Contents always draws in the sketchy style
     markSeen();
     document.title = 'Contents · PenCave';
     content.append(buildContents());               // built in contents.js
@@ -75,11 +72,7 @@ function render() {
   const total = lesson.pages.length;
   const n = Math.min(Math.max(place.page, 1), total);
   const page = lesson.pages[n - 1];
-  /* TIDINESS (Step 3 rule): a lesson you have finished is drawn clean (level 5), one
-     you have not is sketchy (0). We read it BEFORE noting this visit, so the change
-     happens quietly on your next look and is never announced. */
-  ink.level = state.done.includes(place.lesson) ? 5 : 0;
-  noteVisit(place.lesson, n, total);                 // progress.js: bookmark, and finishing the last page
+  saveVisit(place.lesson, n, total);                 // remember where we are (visit.js), for the Contents dots
   /* Is this the very first screen? Lesson 1, page 1, and a visitor who has not been here before. */
   const firstScreen = place.lesson === 1 && n === 1 && !hasSeen();
   if (!(place.lesson === 1 && n === 1)) markSeen();   // turning past page 1 counts as "been here"
@@ -231,26 +224,12 @@ function render() {
   /* Remember where we are, so the arrow keys know where to go. */
   turn.prev = prevHref;
   turn.next = nextHref;
-  turn.collect = last && !firstScreen;           // on a lesson's last page, Next opens the Collect box first
 
   /* Draw the pencil borders for the new page. */
   drawAll();
   watchAll();
 }
-const turn = { prev: null, next: null, collect: false };   // where the arrow keys lead
-
-/* Going "Next". On a lesson's last page, any waiting points are shown in the
-   Collect box first; Collect then carries on to the next lesson. */
-function goNext() {
-  if (!turn.next) return;
-  const target = turn.next;
-  if (turn.collect && state.pending.length) openCollect(() => { location.hash = target; });
-  else location.hash = target;
-}
-/* The Next link in the footer: same rule as the arrow key. */
-document.getElementById('next').addEventListener('click', e => {
-  if (turn.collect && state.pending.length) { e.preventDefault(); goNext(); }
-});
+const turn = { prev: null, next: null };   // where the arrow keys lead
 
 /* ---------- Keyboard: left and right arrow keys turn the page ----------
    We ignore them while typing in a text box, or when Ctrl, Alt or Cmd is held
@@ -258,8 +237,7 @@ document.getElementById('next').addEventListener('click', e => {
 document.addEventListener('keydown', e => {
   if (e.ctrlKey || e.altKey || e.metaKey || e.shiftKey) return;
   if (e.target.closest('input, textarea, select, [contenteditable]')) return;
-  if (document.querySelector('dialog[open]')) return;     // a box is open: the arrows do nothing behind it
-  if (e.key === 'ArrowRight' && turn.next) goNext();
+  if (e.key === 'ArrowRight' && turn.next) location.hash = turn.next;
   if (e.key === 'ArrowLeft'  && turn.prev) location.hash = turn.prev;
 });
 
