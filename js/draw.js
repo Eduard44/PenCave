@@ -137,6 +137,7 @@ function grainFilter(id, w, h, seedNum) {
    Reads the element's size, then lays a wobbly-line SVG behind it. */
 let uid = 0;   // a counter so each element gets its own number
 function draw(el) {
+  if (!el.dataset.drawn) return;                   // no longer a drawn element (book.js can remove the attribute)
   const w = el.offsetWidth, h = el.offsetHeight;   // the element's size in pixels
   if (w < 3 || h < 1) return;                      // hidden or empty: nothing to draw
   el.__w = w; el.__h = h;                          // remember the size we drew at (see the ResizeObserver below)

@@ -61,8 +61,6 @@
 .next-page { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 0 48px; align-items: start; }
 .next-left h2 { margin-bottom: 10px; }
 .next-left p { margin-bottom: 24px; }
-.next-go { text-decoration: none; }
-.next-go .icon { margin-left: 4px; }
 .mini-toc { margin: 0; }
 
 /* Phone: the cards stack in one column, the Practice drawing goes under the pages. */

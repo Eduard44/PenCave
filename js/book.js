@@ -195,11 +195,27 @@ function render() {
   const nextLabel = next.querySelector('span');
   nextLabel.textContent = last ? (lessonAfter ? 'Next lesson' : 'Contents') : 'Next';
   if (last && lessonAfter) nextLabel.append(make('span', 'hide-phone', ': ' + lesson.next));
+  /* On the first screen the big Start button takes Next's place, so Next is hidden.
+     The arrow keys still turn the page. */
   next.classList.toggle('is-off', firstScreen);
   next.removeAttribute('aria-disabled');
   next.setAttribute('aria-hidden', firstScreen ? 'true' : 'false');   // gone from view AND from screen readers
   next.tabIndex = firstScreen ? -1 : 0;
   if (firstScreen) next.removeAttribute('href'); else next.href = nextHref;
+
+  /* On a "Next" page (the end of a lesson) the same link, in the same spot, turns
+     into a big solid button: it is a bigger moment than turning an ordinary page.
+     (Later, the Collect / level-up box will open from this button.) */
+  const bigNext = page.type === 'next';
+  next.classList.toggle('pf-big', bigNext);
+  document.getElementById('page-foot').classList.toggle('big-next', bigNext);   // lets the phone layout give the button its own row
+  if (bigNext) {
+    next.dataset.drawn = 'box'; next.dataset.fill = 'solid'; next.dataset.seed = 'next-go';
+  } else {
+    delete next.dataset.drawn; delete next.dataset.fill; delete next.dataset.seed;
+    const old = next.querySelector(':scope > svg.ink');           // remove the pencil box drawn earlier
+    if (old) old.remove();
+  }
 
   /* The bookmark ribbon fills from the top as you move through the lesson. */
   const ribbon = document.getElementById('ribbon');

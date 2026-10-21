@@ -189,16 +189,6 @@ const BEATS = {
     const left = make('div', 'next-left');
     left.append(make('h2', '', 'Next: ' + here.next));
     if (page.why) left.append(make('p', '', page.why));
-    const go = make('a', 'btn primary big next-go');
-    go.href = after ? placeLink(lesson + 1, 1) : '#contents';
-    go.dataset.drawn = 'box';
-    go.dataset.fill = 'solid';
-    go.dataset.seed = 'next-go';
-    go.append(after ? 'Next lesson: ' + here.next : 'Back to Contents');
-    const arrow = make('i', 'icon');
-    arrow.dataset.icon = 'arrow-right';
-    go.append(arrow);
-    left.append(go);
     wrap.append(left);
 
     /* Right: three dots. This lesson (finished, filled), the next one (ringed), the one after (empty). */
@@ -214,6 +204,7 @@ const BEATS = {
       path.append(row);
     });
     wrap.append(path);
+
     return wrap;
   }
 };
