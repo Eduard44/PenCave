@@ -1,0 +1,19 @@
+/* =====================================================================
+   collect.css  (the Collect box)
+   A <dialog>: the browser centres it and dims the page behind it.
+   Its pencil border is drawn by draw.js (data-drawn on the dialog).
+   ===================================================================== */
+.collect-box { border: 0; background: transparent; color: var(--graphite); padding: 0; max-width: min(440px, 92vw); width: 100%; font: 400 var(--size-body)/1.55 var(--font); overflow: visible; }   /* visible: so the pencil lines may overshoot the edge */
+.collect-box.level-up { max-width: min(520px, 92vw); }
+.collect-box::backdrop { background: rgba(42, 46, 51, 0.45); }   /* plain dimming: no blur, no gradient */
+#collect-body { position: relative; padding: 28px 30px 30px; }
+.level-up #collect-body { padding: 36px 38px 38px; }
+#collect-body h2 { margin-bottom: 14px; }
+.collect-list { list-style: none; margin: 0 0 16px; padding: 0; }
+.collect-list li { display: flex; justify-content: space-between; gap: 16px; padding: 4px 0; }
+.collect-unlock { font-weight: 700; margin-bottom: 16px; }
+.collect-bar { position: relative; height: 16px; margin: 6px 0 8px; }
+.collect-fill { position: absolute; left: 3px; top: 3px; bottom: 3px; background: var(--graphite); max-width: calc(100% - 6px); }
+#collect-body .btn { margin-top: 18px; width: 100%; }
+/* The top level of the bar's text sits close under it. */
+#collect-body .note { margin-top: 0; }

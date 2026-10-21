@@ -14,8 +14,8 @@
    make(), drawAll() and stepArt() come from other scripts that load first or
    are ready by the time these run.
 
-   TICKS ARE NOT SAVED YET (decided for Step 5): they only show on screen and
-   reset when you turn the page. Saving comes with progress in Step 7.
+   TICKS ARE SAVED (progress.js): each tick uses its seed text as its name in
+   the save, so it is still ticked after a page turn or a new visit.
    ===================================================================== */
 
 /* A small tick button, used by Your turn and Practice.
@@ -25,7 +25,7 @@
 function makeTick(label, seed, className, onChange) {
   const btn = make('button', 'tick ' + className);
   btn.type = 'button';
-  btn.setAttribute('aria-pressed', 'false');
+  btn.setAttribute('aria-pressed', isTicked(seed) ? 'true' : 'false');   // start as saved
   btn.setAttribute('aria-label', label);
   btn.dataset.drawn = 'box';
   btn.dataset.seed = seed;
@@ -35,6 +35,7 @@ function makeTick(label, seed, className, onChange) {
   btn.addEventListener('click', () => {
     const on = btn.getAttribute('aria-pressed') !== 'true';
     btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    setTick(seed, on);               // save it (progress.js)
     if (onChange) onChange(on);
     drawAll();                       // redraw so the box fills (or empties)
   });
@@ -66,7 +67,10 @@ const BEATS = {
 
       const head = make('div', 'turn-head');
       head.append(make('h3', '', letter + ' · ' + ex.title),
-                  makeTick('Mark exercise ' + letter + ' as done', 'tk' + lesson + '-' + n + '-' + i, 'tick-corner'));
+                  makeTick('Mark exercise ' + letter + ' as done', 'tk' + lesson + '-' + n + '-' + i, 'tick-corner', on => {
+                    /* Ticking an exercise for the first time earns 5 points (waiting for Collect). */
+                    if (on) award('turn' + lesson + '-' + n + '-' + i, 5, 'Lesson ' + lesson + ' · Your turn ' + letter);
+                  }));
       card.append(head, make('p', 'turn-text', ex.text));
 
       /* A pencil line, then the two hints pushed to the bottom of the card. */
@@ -98,8 +102,9 @@ const BEATS = {
     /* Left: the pages to tick, a running count, a hint. */
     const left = make('div', 'practice-left');
     const row = make('div', 'practice-pages');
-    const counter = make('p', 'note practice-count', '0 of ' + count + ' pages');
-    let done = 0;
+    let done = 0;                                   // how many pages are already ticked (saved)
+    for (let i = 1; i <= count; i++) if (isTicked('pg' + lesson + '-' + n + '-' + i)) done++;
+    const counter = make('p', 'note practice-count', done + ' of ' + count + ' pages');
     for (let i = 1; i <= count; i++) {
       const cell = make('div', 'practice-cell');
       const tick = makeTick('Mark page ' + i + ' as done', 'pg' + lesson + '-' + n + '-' + i, 'tick-page', on => {

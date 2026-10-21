@@ -4,7 +4,7 @@
    Layout (wireframe 2): on the left, Volume 1 as a path of dots joined by
    one line, then Volumes 2 and 3 as "coming soon"; on the right, the tools.
    Lessons are read from the lesson data, so a new lesson appears by itself.
-   Dots (from visit.js): filled = finished, ringed = you are here, empty = not started.
+   Dots (from progress.js): filled = finished, ringed = you are here, empty = not started.
    make() and placeLink() come from book.js; PENCAVE_LESSONS from the lesson files.
    ===================================================================== */
 
@@ -43,7 +43,7 @@ function makeDot(done, here) {
 }
 
 function buildContents() {
-  const visit = readVisit();
+  const visit = state;                              // the saved progress (progress.js)
   const wrap = make('div', 'contents');
 
   /* ---- Title row, and (only if the reader has been somewhere) the Continue strip ---- */
@@ -61,6 +61,17 @@ function buildContents() {
     arrow.dataset.icon = 'arrow-right';
     cont.append(arrow);
     head.append(cont);
+  }
+  /* Points that were earned but not yet collected wait here, in case the reader
+     left a lesson without pressing Next. Pressing opens the Collect box. */
+  if (state.pending.length) {
+    const wait = make('button', 'btn continue-strip', 'Collect ' + pendingTotal() + ' points');
+    wait.type = 'button';
+    wait.dataset.drawn = 'dashed';
+    wait.dataset.seed = 'collect-wait';
+    wait.style.marginLeft = '12px';
+    wait.addEventListener('click', () => openCollect(render));   // render() redraws Contents without the strip
+    head.append(wait);
   }
   wrap.append(head);
 
