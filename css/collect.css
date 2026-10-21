@@ -1,19 +1,20 @@
 /* =====================================================================
-   collect.css  (the Collect box)
+   collect.css  (the Collect box, matching the component sheet)
    A <dialog>: the browser centres it and dims the page behind it.
-   Its pencil border is drawn by draw.js (data-drawn on the dialog).
+   The pencil border and paper fill are drawn on #collect-body (draw.js).
    ===================================================================== */
-.collect-box { border: 0; background: transparent; color: var(--graphite); padding: 0; max-width: min(440px, 92vw); width: 100%; font: 400 var(--size-body)/1.55 var(--font); overflow: visible; }   /* visible: so the pencil lines may overshoot the edge */
-.collect-box.level-up { max-width: min(520px, 92vw); }
+.collect-box { border: 0; background: transparent; color: var(--graphite); padding: 0; max-width: min(420px, 92vw); width: 100%; font: 400 var(--size-body)/1.55 var(--font); overflow: visible; }   /* visible: so the pencil lines may overshoot the edge */
+.collect-box.level-up { max-width: min(460px, 92vw); }
 .collect-box::backdrop { background: rgba(42, 46, 51, 0.45); }   /* plain dimming: no blur, no gradient */
-#collect-body { position: relative; padding: 28px 30px 30px; }
-.level-up #collect-body { padding: 36px 38px 38px; }
-#collect-body h2 { margin-bottom: 14px; }
-.collect-list { list-style: none; margin: 0 0 16px; padding: 0; }
-.collect-list li { display: flex; justify-content: space-between; gap: 16px; padding: 4px 0; }
-.collect-unlock { font-weight: 700; margin-bottom: 16px; }
-.collect-bar { position: relative; height: 16px; margin: 6px 0 8px; }
-.collect-fill { position: absolute; left: 3px; top: 3px; bottom: 3px; background: var(--graphite); max-width: calc(100% - 6px); }
-#collect-body .btn { margin-top: 18px; width: 100%; }
-/* The top level of the bar's text sits close under it. */
-#collect-body .note { margin-top: 0; }
+
+/* Everything is centred, as in the sheet. */
+#collect-body { position: relative; padding: 28px 28px 24px; text-align: center; }
+.level-up #collect-body { padding: 34px 32px 28px; }
+.collect-points { font-size: 40px; font-weight: 700; line-height: 1.1; margin: 14px 0 8px; }
+.collect-level { font-size: 40px; line-height: 1.1; }
+.collect-unlock { margin-top: 6px; }
+.collect-detail { margin-top: 12px; }
+.collect-points + .collect-detail { margin-top: 0; }
+.collect-bar { height: 22px; width: 100%; margin: 14px 0 8px; }
+.collect-actions { display: flex; justify-content: center; margin-top: 18px; }
+.nowrap { white-space: nowrap; }
