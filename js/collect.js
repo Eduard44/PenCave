@@ -1,8 +1,10 @@
 /* =====================================================================
    collect.js  (the Collect box)
-   A still box: what was earned, a thin bar to the next level, one Collect
-   button. When a level is reached, the box is a little bigger and says
-   what unlocked. No confetti, no animation.
+   Built to match the component sheet (part 8): a still, centred box.
+   Normal: the lesson name, a big "+N points", a drawn progress bar to the
+   next level, one Collect button.
+   Level-up: a little bigger. A big "Level N", what unlocked, the bar for the
+   new level, and a note that extra points carry over. No confetti, no animation.
    Uses the browser's built-in <dialog> (see index.html): it handles the
    dimmed background, the Escape key and keyboard focus for us.
    Needs progress.js (points, levels) and book.js (make).
@@ -14,37 +16,57 @@ function openCollect(then) {
   if (!state.pending.length) { if (then) then(); return; }
   const box = document.getElementById('collect');
   const body = document.getElementById('collect-body');
+  const total = pendingTotal();
   const before = levelInfo(state.points);
-  const after = levelInfo(state.points + pendingTotal());
+  const after = levelInfo(state.points + total);
   const levelUp = after.level > before.level;
+
+  /* Was a lesson finished? Its award is labelled "Lesson 2 finished": read the
+     number from the words, then look up the lesson's name. */
+  let finished = null;
+  state.pending.forEach(a => {
+    const m = /^Lesson (\d+) finished$/.exec(a.label);
+    if (m && window.PENCAVE_LESSONS[m[1]]) finished = window.PENCAVE_LESSONS[m[1]].title + ' finished';
+  });
+
+  /* A short line of what the points were for. Each item is kept on one line
+     ("white-space: nowrap" in collect.css), so "+5" never splits from its words. */
+  const makeDetail = () => {
+    const p = make('p', 'note collect-detail');
+    state.pending.forEach((a, i) => {
+      if (i) p.append(' · ');
+      p.append(make('span', 'nowrap', a.label + ' +' + a.pts));
+    });
+    return p;
+  };
 
   body.replaceChildren();                                  // clear the last use
   box.classList.toggle('level-up', levelUp);
 
-  body.append(make('h2', '', levelUp ? 'Level ' + after.level : 'Points to collect'));
+  if (levelUp) {
+    body.append(make('h2', 'collect-level', 'Level ' + after.level));
+    body.append(make('p', 'collect-unlock', after.unlock + ' unlocked'));
+    body.append(makeDetail());
+  } else {
+    body.append(make('h3', '', finished || 'Points to collect'));
+    body.append(make('p', 'collect-points', '+' + total + ' points'));
+    body.append(makeDetail());
+  }
 
-  /* One row per award: the words, and the points on the right. */
-  const list = make('ul', 'collect-list');
-  state.pending.forEach(a => {
-    const row = make('li');
-    row.append(make('span', '', a.label), make('span', '', '+' + a.pts));
-    list.append(row);
-  });
-  body.append(list);
-
-  /* A level-up names what it unlocked. */
-  if (levelUp) body.append(make('p', 'collect-unlock', 'Now open: ' + after.unlock));
-
-  /* The thin bar to the next level, and the words under it. */
+  /* The drawn progress bar (draw.js "bar"): one thick pencil stroke, filled to "value". */
   const bar = make('div', 'collect-bar');
-  bar.dataset.drawn = 'box';
+  bar.dataset.drawn = 'bar';
+  bar.dataset.value = after.frac;
   bar.dataset.seed = 'collect-bar';
-  const fill = make('span', 'collect-fill');
-  fill.style.width = Math.round(after.frac * 100) + '%';
-  bar.append(fill);
+  bar.setAttribute('role', 'progressbar');                 // tells a screen reader this is a progress bar
+  bar.setAttribute('aria-valuemin', '0');
+  bar.setAttribute('aria-valuemax', '100');
+  bar.setAttribute('aria-valuenow', Math.round(after.frac * 100));
+  bar.setAttribute('aria-label', after.next ? 'Progress to Level ' + after.next.n : 'Top level');
   body.append(bar);
+
   body.append(make('p', 'note', after.next
-    ? (after.toNext + ' more points to Level ' + after.next.n)
+    ? (levelUp ? 'Extra points carry into Level ' + after.next.n : after.toNext + ' more points to Level ' + after.next.n)
     : 'The top level for now.'));
 
   const go = make('button', 'btn primary', 'Collect');
@@ -57,7 +79,9 @@ function openCollect(then) {
     box.close();
     if (then) then();
   });
-  body.append(go);
+  const actions = make('div', 'collect-actions');
+  actions.append(go);
+  body.append(actions);
 
   box.showModal();
   drawAll(); watchAll();                                   // draw the pencil lines now the box is visible
