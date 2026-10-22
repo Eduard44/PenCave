@@ -16,6 +16,7 @@ const RATING_LABELS = { 1: '1 · Just practising', 2: '2 · Something outstandin
 /* The form. opts:
      note      give an existing note to EDIT it (leave out to add a new one)
      lesson    the lesson number to tag a new note with (optional)
+     text      words to start the box with (optional), e.g. from the Reflect box
      onDone    runs after saving: onDone(note, scored)
      onCancel  if given, a Cancel button is shown */
 function buildNoteForm(opts) {
@@ -31,6 +32,7 @@ function buildNoteForm(opts) {
   area.placeholder = 'What did you practise today?';
   area.setAttribute('aria-label', 'What did you practise today?');
   if (editing) area.value = opts.note.text;
+  else if (opts.text) area.value = opts.text;
   field.append(area);
   form.append(field);
 
@@ -89,7 +91,9 @@ function buildNoteForm(opts) {
 }
 
 /* The small box for the Practice and Reflect pages. Built the first time, then reused. */
-function openNoteBox(lesson) {
+/* "text" starts the box with those words; "saved" runs once a note has been saved;
+   "after" runs when the box is finished with (after Collect, or Done). */
+function openNoteBox(lesson, text, saved, after) {
   let box = document.getElementById('note-box');
   if (!box) {
     box = make('dialog', 'collect-box note-box');   // same look as the Collect box
@@ -111,11 +115,13 @@ function openNoteBox(lesson) {
 
   const form = buildNoteForm({
     lesson: lesson,
+    text: text,
     onCancel: () => box.close(),
     onDone: (note, scored) => {
+      if (saved) saved();
       if (scored) {                                  // it earned points: show them straight away
         box.close();
-        openCollect();
+        openCollect(after);
       } else {                                       // an extra note: saved, no points, say so
         body.replaceChildren();
         body.append(make('h3', '', 'Saved to your journal'),
@@ -123,7 +129,7 @@ function openNoteBox(lesson) {
         const done = make('button', 'btn primary', 'Done');
         done.type = 'button';
         done.dataset.drawn = 'box'; done.dataset.fill = 'solid'; done.dataset.seed = 'note-done';
-        done.addEventListener('click', () => box.close());
+        done.addEventListener('click', () => { box.close(); if (after) after(); });
         const row = make('div', 'jrow'); row.append(done);
         body.append(row);
         drawAll(); watchAll();
@@ -138,12 +144,13 @@ function openNoteBox(lesson) {
 }
 
 /* The button on the Practice and Reflect pages. */
-function makeNoteButton(lesson) {
+/* getText (optional) gives words to start the box with; saved and after (optional): see openNoteBox. */
+function makeNoteButton(lesson, getText, saved, after) {
   const b = make('button', 'btn note-button', 'Add a note to my journal');
   b.type = 'button';
   b.dataset.drawn = 'box';
   b.dataset.seed = 'note-open';
-  b.addEventListener('click', () => openNoteBox(lesson));
+  b.addEventListener('click', () => openNoteBox(lesson, getText ? getText() : '', saved, after));
   return b;
 }
 

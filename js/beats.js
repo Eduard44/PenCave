@@ -154,7 +154,9 @@ const BEATS = {
     area.rows = 6;
     box.append(label, area);
     left.append(box);
-    left.append(makeNoteButton(lesson));            // "Add a note to my journal" (journal.js)
+    /* The button carries what you typed here into the journal box, and clears this
+       box once the note is saved (journal.js). */
+    left.append(makeNoteButton(lesson, () => area.value, () => { area.value = ''; }));
     wrap.append(left);
 
     /* The line between the halves (it turns horizontal on a phone). */

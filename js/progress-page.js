@@ -58,14 +58,11 @@ function buildProgress() {
   today.append(pips);
   wrap.append(today);
 
-  /* ---- Practice journal: write a note, then every note below ---- */
+  /* ---- Practice journal: the Add-note button, then every note below ---- */
   const journal = progressSection('Practice journal', 'pr-journal');
-  journal.append(buildNoteForm({
-    onDone: (note, wasScored) => {
-      render();                                      // redraw the page with the new note
-      if (wasScored) openCollect(render);            // it earned points: show them
-    }
-  }));
+  /* The same button and pop-up box as on the Practice and Reflect pages. No lesson tag
+     here. The page redraws when a note is saved, and again after the points are collected. */
+  journal.append(makeNoteButton(null, null, render, render));
   journal.append(buildNoteList(render));
   wrap.append(journal);
   return wrap;
