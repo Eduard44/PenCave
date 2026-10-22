@@ -133,30 +133,19 @@ const BEATS = {
   },
 
   /* REFLECT (wireframe 4C): two halves with a pencil line between.
-     Left: the question and a plain "room to think" box. Right: Look first, with a
+     Left: the question and the Add-a-note button. Right: Look first, with a
      drawn box for a real object or drawing to study.
-     Data: question, boxLabel, lookFirst: { heading, text, caption, art (optional) }
-     The text box is plain and NOT saved yet (the journal comes in Step 7). */
+     Data: question, lookFirst: { heading, text, caption, art (optional) }
+     (boxLabel is no longer used: there is no text box on this page.) */
   reflect(page, lesson, n) {
     const wrap = make('div', 'reflect');
 
     /* Left half: Reflect */
     const left = make('div', 'reflect-left');
     left.append(make('h2', '', page.question));
-    /* A textarea cannot hold a drawn SVG, so the pencil border goes on a wrapper. */
-    const box = make('div', 'reflect-box');
-    box.dataset.drawn = 'box';
-    box.dataset.seed = 'reflect' + lesson + '-' + n;
-    const label = make('label', 'note', page.boxLabel || '');
-    label.htmlFor = 'reflect-text';
-    const area = make('textarea');
-    area.id = 'reflect-text';
-    area.rows = 6;
-    box.append(label, area);
-    left.append(box);
-    /* The button carries what you typed here into the journal box, and clears this
-       box once the note is saved (journal.js). */
-    left.append(makeNoteButton(lesson, () => area.value, () => { area.value = ''; }));
+    /* No text box here: writing happens in the pop-up that this button opens
+       (journal.js), the same as on the Practice page. */
+    left.append(makeNoteButton(lesson));
     wrap.append(left);
 
     /* The line between the halves (it turns horizontal on a phone). */
