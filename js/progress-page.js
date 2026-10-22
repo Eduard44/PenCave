@@ -1,9 +1,8 @@
 /* =====================================================================
    progress-page.js  (the Your progress page, first part)
    book.js calls buildProgress() when the address bar says #progress.
-   Built so far (wireframe 5): your level, today, and the practice journal.
-   Still to come: the year strip and month view, the level path, your records,
-   Download my notes.
+   Built so far (wireframe 5): your level, today, your year (the calendar strip), and
+   the practice journal. Still to come: the level path, your records, Download my notes.
    Needs progress.js (state, levels), journal.js (the notes), contents.js (makeDot),
    collect.js (openCollect) and book.js (make, render).
    ===================================================================== */
@@ -58,12 +57,22 @@ function buildProgress() {
   today.append(pips);
   wrap.append(today);
 
-  /* ---- Practice journal: the Add-note button, then every note below ---- */
+  /* The notes for the picked day (today until you pick another) sit in the journal below.
+     The calendar fills this box when a day is clicked. */
+  const notesBox = make('div', 'day-notes');
+
+  /* ---- Your year: the calendar strip ---- */
+  const year = progressSection('Your year', 'pr-year');
+  year.append(buildYear(notesBox));
+  wrap.append(year);
+
+  /* ---- Practice journal: the Add-note button, then the notes for the picked day ---- */
   const journal = progressSection('Practice journal', 'pr-journal');
   /* The same button and pop-up box as on the Practice and Reflect pages. No lesson tag
      here. The page redraws when a note is saved, and again after the points are collected. */
   journal.append(makeNoteButton(null, null, render, render));
-  journal.append(buildNoteList(render));
+  journal.append(notesBox);
+  showDayNotes(notesBox, calPick || todayText(), render);
   wrap.append(journal);
   return wrap;
 }

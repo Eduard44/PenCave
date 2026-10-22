@@ -14,6 +14,7 @@
      last      the bookmark: { lesson, page }
      ticks     ticked boxes: { 'seed text': 1 }
      lastDay   the last calendar day the reader visited, e.g. '2026-10-21'
+     lessonDays  the lessons finished (or repeated) on each day: { '2026-10-21': [1, 2] }
      run       a repeat run in progress: { lesson, seen } or null
      notes     the practice journal: [{ id, day, time, text, rating, lesson }]
      noteDays  how many notes have scored points on each day: { '2026-10-21': 2 }
@@ -50,7 +51,7 @@ const OLD_VISIT_KEY = 'pencave-visit';   // the Step 5 stand-in; read once, so n
 
 /* An empty save. */
 function freshProgress() {
-  return { v: 1, points: 0, pending: [], awarded: {}, done: [], last: null, ticks: {}, lastDay: null, run: null, notes: [], noteDays: {} };
+  return { v: 1, points: 0, pending: [], awarded: {}, done: [], last: null, ticks: {}, lastDay: null, run: null, lessonDays: {}, notes: [], noteDays: {} };
 }
 
 /* Read the save. If there is none (or it is damaged), start empty. */
@@ -142,6 +143,14 @@ function noteDay() {
   state.lastDay = today;
   saveProgress();
 }
+/* Remember that a lesson was finished (or repeated) today. The calendar's "lesson only" dot reads this. */
+function logLesson(lesson) {
+  const day = todayText();
+  const list = state.lessonDays[day] || (state.lessonDays[day] = []);
+  if (!list.includes(lesson)) list.push(lesson);
+  saveProgress();
+}
+
 /* ---------- Repeat runs ----------
    Repeating a lesson you have already finished pays 5 points, but only for a FRESH run:
      - it starts when you open page 1,
@@ -158,6 +167,7 @@ function trackRun(lesson, page, total) {
   else state.run = null;                                                           // skipped, or came in mid-lesson
   if (state.run && total > 1 && state.run.seen === total) {
     award('repeat' + lesson + '-' + Date.now(), 5, 'Lesson ' + lesson + ' again');
+    logLesson(lesson);
     state.run = null;                                                              // paid: the run is over
   }
 }
@@ -169,6 +179,7 @@ function noteVisit(lesson, page, total) {
   if (page === total && !state.done.includes(lesson)) {
     state.done.push(lesson);
     award('lesson' + lesson, 10, 'Lesson ' + lesson + ' finished');
+    logLesson(lesson);
   }
   saveProgress();
 }
@@ -220,6 +231,32 @@ function editNote(id, text, rating) {
 function deleteNote(id) {
   state.notes = state.notes.filter(n => n.id !== id);
   saveProgress();
+}
+
+/* ---------- Calendar data ----------
+   dayInfo(day): what happened on one day, and its ONE mark (the strongest):
+     'empty' nothing, 'dot' a lesson only, 'light' a note, 'dense' an outstanding note. */
+function dayInfo(day) {
+  const notes = state.notes.filter(n => n.day === day);
+  const lessons = state.lessonDays[day] || [];
+  let mark = 'empty';
+  if (lessons.length) mark = 'dot';
+  if (notes.length) mark = notes.some(n => n.rating === 2) ? 'dense' : 'light';
+  return { day: day, notes: notes, lessons: lessons, mark: mark };
+}
+
+/* The longest run of days in a row that have any mark. Returns { len, days }, where
+   days is a Set of the day texts in that run. A run of one day is not shown (len < 2
+   gives an empty set). If two runs tie, the most recent one wins. */
+function longestRun() {
+  const toNum = d => { const [y, m, dd] = d.split('-').map(Number); return Date.UTC(y, m - 1, dd) / 86400000; };
+  const marked = [...new Set([...state.notes.map(n => n.day), ...Object.keys(state.lessonDays)])].sort();
+  let best = [], run = [];
+  marked.forEach((d, i) => {
+    if (i > 0 && toNum(d) - toNum(marked[i - 1]) === 1) run.push(d); else run = [d];
+    if (run.length >= best.length) best = run.slice();        // ">=" so a later run wins a tie
+  });
+  return { len: best.length, days: best.length >= 2 ? new Set(best) : new Set() };
 }
 
 /* ---------- The top bar ----------

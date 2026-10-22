@@ -66,12 +66,13 @@ function render() {
     return;
   }
   /* The Your progress page. Like Contents, it is not a book page. */
-  if (location.hash === '#progress') {
+  const progressRoute = /^#progress(?:\/(\d{4})-(\d{2}))?$/.exec(location.hash);   // #progress or #progress/2026-10 (a month)
+  if (progressRoute) {
     showBookParts(false);
     ink.level = inkLevel();
     markSeen();
     document.title = 'Your progress · PenCave';
-    content.append(buildProgress());               // built in progress-page.js
+    content.append(progressRoute[1] ? buildMonth(Number(progressRoute[1]), Number(progressRoute[2])) : buildProgress());   // progress-page.js, calendar.js
     turn.prev = turn.next = null;
     turn.collect = false;
     drawAll(); watchAll();

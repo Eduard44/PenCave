@@ -1,0 +1,43 @@
+/* =====================================================================
+   calendar.css  (the year strip and the month view)
+   Marks are drawn by calendar.js; pencil boxes by draw.js.
+   ===================================================================== */
+/* ---- Year strip ---- */
+.strip-wrap { overflow-x: auto; padding: 6px 0 10px; max-width: 100%; }
+.strip-inner { position: relative; padding-top: 44px; }          /* room for the month names */
+.year-svg { display: block; cursor: pointer; }
+.month-names { position: absolute; left: 0; top: 0; height: 44px; width: 100%; }
+.month-btn { position: absolute; top: 0; height: 44px; appearance: none; background: none; border: 0; padding: 0; margin: 0; cursor: pointer; font: 700 var(--size-note)/1 var(--font); color: var(--graphite); text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1.5px; }
+.month-btn:hover { text-decoration-thickness: 3px; }
+.marks { display: flex; flex-wrap: wrap; gap: 14px 28px; margin: 14px 0 6px; }
+.mark-item { display: inline-flex; align-items: center; gap: 10px; font-size: var(--size-note); }
+.year .note { margin-top: 8px; }
+
+/* ---- Notes for the picked day ---- */
+.day-notes { margin-top: 22px; display: grid; gap: 6px; }
+.day-notes .note-row + .note-row { margin-top: 10px; }
+
+/* ---- Month view ---- */
+.month-page { max-width: 1000px; }
+.month-back { display: inline-flex; align-items: center; gap: 4px; margin-bottom: 14px; min-height: 44px; }
+.month-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 24px; margin-bottom: 22px; }
+.month-nav { display: flex; gap: 28px; }
+.month-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px; }
+.month-dow { text-align: left; padding-left: 8px; }
+.day-blank { min-height: 20px; }
+.day-cell { appearance: none; background: none; border: 0; cursor: pointer; text-align: left; color: var(--graphite); font: inherit; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; padding: 8px 10px; min-height: 104px; }
+.day-cell:hover .day-n { text-decoration: underline; text-underline-offset: 3px; }
+.day-n { font-weight: 700; }
+.day-marks { display: flex; gap: 4px; }
+.day-words { line-height: 1.25; }
+.day-cell.is-picked { outline: 3px solid var(--graphite); outline-offset: 3px; }   /* which day's notes are shown below */
+.month-page .marks { margin-top: 22px; }
+
+/* Phone: the same grid with narrower boxes. Marks only, the notes underneath. */
+@container (max-width: 640px) {
+  .month-grid { gap: 4px; }
+  .month-dow { padding-left: 2px; font-size: 14px; }
+  .day-cell { padding: 4px; min-height: 58px; gap: 2px; }
+  .day-words { display: none; }
+  .day-marks svg { width: 16px; height: 16px; }
+}
