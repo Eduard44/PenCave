@@ -25,7 +25,7 @@ function openCollect(then) {
      number from the words, then look up the lesson's name. */
   let finished = null;
   state.pending.forEach(a => {
-    const m = /^Lesson (\d+) finished$/.exec(a.label);
+    const m = /^Lesson (\d+) (?:finished|again)$/.exec(a.label);
     if (m && window.PENCAVE_LESSONS[m[1]]) finished = window.PENCAVE_LESSONS[m[1]].title + ' finished';
   });
 

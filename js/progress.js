@@ -14,6 +14,7 @@
      last      the bookmark: { lesson, page }
      ticks     ticked boxes: { 'seed text': 1 }
      lastDay   the last calendar day the reader visited, e.g. '2026-10-21'
+     run       a repeat run in progress: { lesson, seen } or null
      notes     the practice journal: [{ id, day, time, text, rating, lesson }]
      noteDays  how many notes have scored points on each day: { '2026-10-21': 2 }
 
@@ -21,6 +22,7 @@
      10 for finishing a lesson (reaching its last page)
       5 for ticking a Your turn exercise (first time only)
       3 for coming back on a new day
+      5 for repeating a lesson you have finished before (see "Repeat runs" below)
    Points are never taken away: unticking does not remove them.
    A journal note scores 5 points (rated 1, "just practising") or 8 (rated 2,
    "something outstanding"). Only the FIRST TWO notes of each day score. Extra
@@ -48,7 +50,7 @@ const OLD_VISIT_KEY = 'pencave-visit';   // the Step 5 stand-in; read once, so n
 
 /* An empty save. */
 function freshProgress() {
-  return { v: 1, points: 0, pending: [], awarded: {}, done: [], last: null, ticks: {}, lastDay: null, notes: [], noteDays: {} };
+  return { v: 1, points: 0, pending: [], awarded: {}, done: [], last: null, ticks: {}, lastDay: null, run: null, notes: [], noteDays: {} };
 }
 
 /* Read the save. If there is none (or it is damaged), start empty. */
@@ -140,8 +142,30 @@ function noteDay() {
   state.lastDay = today;
   saveProgress();
 }
+/* ---------- Repeat runs ----------
+   Repeating a lesson you have already finished pays 5 points, but only for a FRESH run:
+     - it starts when you open page 1,
+     - every page after that is turned to in order (going back is allowed, skipping ahead is not),
+     - it pays when the last page is reached, and then the run is over.
+   So continuing a lesson from the middle, or bouncing back and forth at the end,
+   earns nothing. To earn again, go back to page 1. The run is saved (state.run), so a
+   page reload does not lose it. */
+function trackRun(lesson, page, total) {
+  const r = state.run;
+  if (page === 1) state.run = { lesson: lesson, seen: 1 };                         // a fresh start
+  else if (r && r.lesson === lesson && page === r.seen + 1) r.seen = page;        // the next page in order
+  else if (r && r.lesson === lesson && page <= r.seen) { /* same page or back: keep the run */ }
+  else state.run = null;                                                           // skipped, or came in mid-lesson
+  if (state.run && total > 1 && state.run.seen === total) {
+    award('repeat' + lesson + '-' + Date.now(), 5, 'Lesson ' + lesson + ' again');
+    state.run = null;                                                              // paid: the run is over
+  }
+}
+
 function noteVisit(lesson, page, total) {
   state.last = { lesson: lesson, page: page };
+  if (state.done.includes(lesson)) trackRun(lesson, page, total);   // a lesson finished before: this may be a repeat
+  else state.run = null;                                            // a first time through is not a repeat
   if (page === total && !state.done.includes(lesson)) {
     state.done.push(lesson);
     award('lesson' + lesson, 10, 'Lesson ' + lesson + ' finished');
