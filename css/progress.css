@@ -1,0 +1,60 @@
+/* =====================================================================
+   progress.css  (Your progress: the two columns, the Levels list, Your records,
+   the Save file block). Wireframe 5. Loaded AFTER journal.css, so the one rule
+   below that widens .progress-page wins over the 640px set there.
+   Pencil borders are drawn by draw.js (data-drawn). Colours come from tokens.css.
+   ===================================================================== */
+
+/* The page is wider now: two columns. The left one keeps its old width (640px max),
+   so the sections that were already here look exactly as before. */
+.progress-page { max-width: 1100px; }
+.progress-cols { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 0 48px; }
+.progress-left { max-width: 640px; min-width: 0; }
+
+/* Right column, with a drawn line on its left (the same idea as the tools column on Contents). */
+.progress-side { position: relative; padding-left: 24px; min-width: 0; }
+.progress-side .side-rule { position: absolute; left: 0; top: 0; bottom: 0; width: 8px; }
+
+/* Words only for screen readers (the level state is also written in words for them). */
+.pp-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* ---- Levels: boxed rows (option C). Reached = solid line, yours = heavier line, later = dashed grey. ---- */
+.level-rows { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.level-row { position: relative; display: grid; grid-template-columns: 84px minmax(0, 1fr); gap: 12px; padding: 10px 14px; }
+.level-row .lv { font-weight: 700; line-height: 1.3; }
+.level-row .lv small { display: block; font-weight: 400; font-size: var(--size-note); }
+.level-row .what { font-size: var(--size-note); align-self: center; }
+.level-row .here { display: block; font-weight: 700; }
+.level-row.is-later { color: var(--locked); }
+.level-rows + .note { margin-top: 14px; }   /* a little air under the last level box */
+
+/* ---- Your records ---- */
+.records { display: grid; grid-template-columns: 1fr 1fr; gap: 18px 20px; margin: 0; }
+.records dt { font-size: var(--size-note); color: var(--locked); }
+.records dd { margin: 0; font-size: 26px; font-weight: 700; line-height: 1.2; }
+
+/* ---- How your data is kept: a small underlined line that opens a few words ---- */
+.kept summary { cursor: pointer; font-size: var(--size-note); text-decoration: underline; text-underline-offset: 4px; list-style: none; min-height: 44px; display: flex; align-items: center; }
+.kept summary::-webkit-details-marker { display: none; }
+.kept summary:hover { text-decoration-thickness: 3px; }
+.kept summary:focus-visible { outline: 3px solid var(--graphite); outline-offset: 4px; }
+.kept[open] summary { margin-bottom: 6px; }
+
+/* ---- Save file block (left column, under the journal) ---- */
+.save-block > p { max-width: 560px; }
+.save-parts-label { margin-top: 18px; }
+.save-parts { display: grid; gap: 4px; margin-top: 6px; }
+.save-part { display: flex; align-items: center; gap: 14px; min-height: 44px; }
+.save-part-text { cursor: pointer; }
+.save-buttons { margin-top: 18px; }
+.save-status { margin-top: 12px; max-width: 560px; }
+
+/* A save-file message box reuses the note box look; just keep its buttons on one row. */
+.save-box-body .jrow { margin-top: 20px; }
+
+/* NARROW (a phone, or a small window): one column; the right column goes underneath and its line turns horizontal. */
+@container (max-width: 820px) {
+  .progress-cols { grid-template-columns: minmax(0, 1fr); }
+  .progress-side { padding-left: 0; padding-top: 24px; margin-top: 12px; }
+  .progress-side .side-rule { right: 0; bottom: auto; width: auto; height: 8px; }
+}
