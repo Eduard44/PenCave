@@ -66,7 +66,7 @@ function openCollect(then) {
   body.append(bar);
 
   body.append(make('p', 'note', after.next
-    ? (levelUp ? 'Extra points carry into Level ' + after.next.n : after.toNext + ' more points to Level ' + after.next.n)
+    ? (levelUp ? 'Extra points count toward Level ' + after.next.n + '. ' + after.toNext + ' more to go.' : after.toNext + ' more points to Level ' + after.next.n)
     : 'The top level for now.'));
 
   const go = make('button', 'btn primary', 'Collect');

@@ -116,6 +116,7 @@ const BEATS = {
     }
     left.append(row, counter);
     if (page.hint) left.append(make('p', 'note', page.hint));
+    left.append(makeNoteButton(lesson));            // "Add a note to my journal" (journal.js)
     wrap.append(left);
 
     /* Right: the one main drawing, "what a full page looks like". */
@@ -153,6 +154,7 @@ const BEATS = {
     area.rows = 6;
     box.append(label, area);
     left.append(box);
+    left.append(makeNoteButton(lesson));            // "Add a note to my journal" (journal.js)
     wrap.append(left);
 
     /* The line between the halves (it turns horizontal on a phone). */

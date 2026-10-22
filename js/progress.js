@@ -14,12 +14,18 @@
      last      the bookmark: { lesson, page }
      ticks     ticked boxes: { 'seed text': 1 }
      lastDay   the last calendar day the reader visited, e.g. '2026-10-21'
+     notes     the practice journal: [{ id, day, time, text, rating, lesson }]
+     noteDays  how many notes have scored points on each day: { '2026-10-21': 2 }
 
    POINTS (decided for Step 6):
      10 for finishing a lesson (reaching its last page)
       5 for ticking a Your turn exercise (first time only)
       3 for coming back on a new day
    Points are never taken away: unticking does not remove them.
+   A journal note scores 5 points (rated 1, "just practising") or 8 (rated 2,
+   "something outstanding"). Only the FIRST TWO notes of each day score. Extra
+   notes are free and add nothing. Editing or deleting a note never changes
+   points (so deleting and rewriting cannot earn twice).
    Only the running total is stored, so the level numbers below can be
    changed later and every save still works.
 
@@ -42,7 +48,7 @@ const OLD_VISIT_KEY = 'pencave-visit';   // the Step 5 stand-in; read once, so n
 
 /* An empty save. */
 function freshProgress() {
-  return { v: 1, points: 0, pending: [], awarded: {}, done: [], last: null, ticks: {}, lastDay: null };
+  return { v: 1, points: 0, pending: [], awarded: {}, done: [], last: null, ticks: {}, lastDay: null, notes: [], noteDays: {} };
 }
 
 /* Read the save. If there is none (or it is damaged), start empty. */
@@ -147,6 +153,48 @@ function noteVisit(lesson, page, total) {
 const isTicked = key => !!state.ticks[key];
 function setTick(key, on) {
   if (on) state.ticks[key] = 1; else delete state.ticks[key];
+  saveProgress();
+}
+
+/* ---------- The practice journal ----------
+   Points for a rating (numbers to tune later) and how many notes score per day. */
+const NOTE_POINTS = { 1: 5, 2: 8 };
+const NOTES_SCORED_PER_DAY = 2;
+
+/* Save a new note. Returns { note, scored }: scored is true if it earned points. */
+function addNote(text, rating, lesson) {
+  const now = new Date();
+  const two = x => String(x).padStart(2, '0');
+  const day = todayText();
+  const note = {
+    id: String(now.getTime()),                     // the moment it was written: unique enough
+    day: day,
+    time: two(now.getHours()) + ':' + two(now.getMinutes()),
+    text: text,
+    rating: rating,
+    lesson: lesson || null                          // the lesson it was written from, if any
+  };
+  /* Count scored notes per day in its own record, so deleting a note and writing
+     another cannot earn the same points twice. */
+  const used = state.noteDays[day] || 0;
+  let scored = false;
+  if (used < NOTES_SCORED_PER_DAY) {
+    scored = true;
+    state.noteDays[day] = used + 1;
+    award('note' + note.id, NOTE_POINTS[rating], 'Journal note');
+  }
+  state.notes.push(note);
+  saveProgress();
+  return { note: note, scored: scored };
+}
+/* Change a note's words or rating. Points stay as they were. */
+function editNote(id, text, rating) {
+  const note = state.notes.find(n => n.id === id);
+  if (note) { note.text = text; note.rating = rating; saveProgress(); }
+}
+/* Delete a note. Points already given stay. */
+function deleteNote(id) {
+  state.notes = state.notes.filter(n => n.id !== id);
   saveProgress();
 }
 

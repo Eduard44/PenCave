@@ -65,6 +65,18 @@ function render() {
     drawAll(); watchAll();
     return;
   }
+  /* The Your progress page. Like Contents, it is not a book page. */
+  if (location.hash === '#progress') {
+    showBookParts(false);
+    ink.level = inkLevel();
+    markSeen();
+    document.title = 'Your progress · PenCave';
+    content.append(buildProgress());               // built in progress-page.js
+    turn.prev = turn.next = null;
+    turn.collect = false;
+    drawAll(); watchAll();
+    return;
+  }
   showBookParts(true);
 
   if (!lesson) {                                    // no such lesson: say so plainly
