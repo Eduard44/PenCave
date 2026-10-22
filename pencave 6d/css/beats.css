@@ -1,0 +1,78 @@
+/* =====================================================================
+   beats.css
+   Styles for the Guided try, Your turn, Practice and Reflect pages (see js/beats.js).
+   Colours come from tokens.css. Pencil borders are drawn by draw.js.
+   ===================================================================== */
+
+/* ---- Guided try: a numbered list ---- */
+.try-steps { margin: 0; padding-left: 28px; max-width: 62ch; }
+.try-steps li { margin-bottom: 14px; padding-left: 6px; }
+
+/* ---- Ticks (shared by Your turn and Practice) ----
+   A button with a drawn box. The tick shows only once ticked; the box then
+   fills solid (draw.js does that when aria-pressed is "true"). */
+.tick { appearance: none; background: none; border: 0; cursor: pointer; padding: 0;
+        display: inline-flex; align-items: center; justify-content: center; color: var(--graphite); }
+.tick[aria-pressed="true"] { color: var(--paper); }
+.tick[aria-pressed="false"] .icon { visibility: hidden; }   /* keeps the size, hides the tick */
+.tick:hover { background: rgba(42,46,51,0.07); }
+.tick[aria-pressed="true"]:hover { background: none; }
+.tick-corner { width: 36px; height: 36px; flex: none; }     /* big enough to tap */
+.tick-page { width: 64px; height: 76px; }                   /* a blank page */
+
+/* ---- Your turn: cards side by side (--cols is set by beats.js: 2 or 3) ---- */
+.turn-list { display: grid; grid-template-columns: repeat(var(--cols, 3), minmax(0, 1fr)); gap: 20px; }
+.turn-card { position: relative; padding: 16px 18px 18px; display: flex; flex-direction: column; }
+.turn-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+.turn-head h3 { padding-top: 6px; }
+.turn-text { margin-bottom: 18px; }
+/* The hints sit at the bottom of every card, so the three cards line up. */
+.turn-hints { margin-top: auto; padding-top: 10px; }
+.turn-rule { display: block; height: 8px; margin-bottom: 8px; }
+.turn-hints .hint { margin-bottom: 4px; }
+
+/* ---- Practice: pages to tick on the left, one drawing on the right ---- */
+.practice { display: flex; flex-wrap: wrap; gap: 28px 40px; align-items: flex-start; }
+.practice-left { flex: 1 1 340px; min-width: 0; }
+.practice-pages { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 14px; }
+.practice-cell { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.practice-count { margin-bottom: 10px; }
+.practice-fig { flex: 0 0 200px; }
+.practice-fig .art { aspect-ratio: 1 / 1.05; }
+
+/* ---- Reflect: two halves with a pencil line between (wireframe 4C) ---- */
+.reflect { display: grid; grid-template-columns: minmax(0, 1fr) 8px minmax(0, 1fr); gap: 0 32px; align-items: start; }
+.reflect h2 { margin-bottom: 18px; }
+.reflect h3 { margin-bottom: 4px; }
+.reflect-right > p { margin-bottom: 18px; }
+.reflect-rule { align-self: stretch; }               /* the line runs the full height */
+.reflect-right .art { aspect-ratio: 1 / 0.8; width: 100%; }
+.reflect-right .art svg { width: 100%; height: 100%; display: block; }
+.reflect-box { position: relative; padding: 14px 16px; }
+.reflect-box label { display: block; margin-bottom: 6px; }
+/* The text box itself has no border: the drawn one on its wrapper is the border. */
+.reflect-box textarea {
+  display: block; width: 100%; resize: vertical; border: 0; background: transparent;
+  font: inherit; color: var(--graphite); line-height: 1.55;
+}
+.reflect-box textarea:focus-visible { outline-offset: 8px; }
+
+/* ---- Next page: words and the big button on the left, a small dot path on the right ---- */
+.next-page { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 0 48px; align-items: start; }
+.next-left h2 { margin-bottom: 10px; }
+.next-left p { margin-bottom: 24px; }
+.mini-toc { margin: 0; }
+
+/* Phone: the cards stack in one column, the Practice drawing goes under the pages. */
+@container (max-width: 640px) {
+  .turn-list { grid-template-columns: minmax(0, 1fr); }
+  .practice-fig { flex-basis: 100%; max-width: 220px; }
+  /* Reflect and Next stack; the line between the Reflect halves turns horizontal. */
+  .reflect { grid-template-columns: minmax(0, 1fr); gap: 24px 0; }
+  .reflect-rule { height: 8px; align-self: auto; }
+  .next-page { grid-template-columns: minmax(0, 1fr); gap: 32px 0; }
+}
+/* On a medium screen the margin column squeezes the cards: stack when the box is under 900px. */
+@container (max-width: 900px) {
+  .turn-list { grid-template-columns: minmax(0, 1fr); }
+}

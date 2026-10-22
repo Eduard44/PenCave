@@ -1,0 +1,97 @@
+/* =====================================================================
+   lesson.css
+   The lesson page: heading, step frames, margin column, the footer with
+   Previous and Next, and the bookmark ribbon. Phone rules are at the end.
+   ===================================================================== */
+
+/* The page area. max-width keeps lines short on very wide screens;
+   margin: 0 auto centres it. */
+.page { position: relative; max-width: 1100px; margin: 0 auto; padding: 28px 28px 24px; min-height: 340px; }
+/* The small label above the heading: "Lesson 1 · ...". Leaves room on the right for the ribbon. */
+.eyebrow { margin-bottom: 6px; padding-right: 56px; }
+.page-title { margin-bottom: 12px; }
+/* The tiny skip link on the very first screen, top right. */
+.skip { margin-bottom: 18px; text-align: right; padding-right: 56px; max-width: none; }
+.skip .icon { margin-left: 6px; }
+/* The big Start button. */
+.start { margin-top: 32px; }
+.page-intro { margin-bottom: 28px; }
+
+/* Two columns: drawings (flexible) and the margin notes (230px).
+   minmax(0, 1fr) lets the column shrink instead of overflowing. */
+.lesson-grid { display: grid; grid-template-columns: minmax(0, 1fr) 230px; gap: 0 28px; }
+
+/* A page with no margin notes uses the full width. */
+.lesson-grid.no-margin { grid-template-columns: minmax(0, 1fr); }
+
+/* The first screen: words and Start on the left, one drawing on the right. */
+.first-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 400px); gap: 0 48px; align-items: start; }
+.first-left .page-intro { margin-bottom: 0; }
+.first-right { margin: 0; }
+.first-right .art { aspect-ratio: 1 / 1.05; width: 100%; }
+.first-right .art svg { width: 100%; height: 100%; display: block; }
+
+/* The step frames sit in a row of three. */
+.frames { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; align-content: start; }
+.frame { margin: 0; }
+.frame .art { aspect-ratio: 1 / 1.05; display: block; width: 100%; }   /* a box slightly taller than wide */
+.frame .art svg { width: 100%; height: 100%; display: block; }
+.frame figcaption { margin-top: 12px; }
+
+/* The margin column, with a hand-drawn vertical line on its left. */
+.margin-col { position: relative; padding-left: 24px; }
+.margin-col .vrule { position: absolute; left: 0; top: 0; bottom: 0; width: 8px; }
+.margin-col h3 { margin-bottom: 6px; }
+.margin-col p { font-size: var(--size-note); line-height: 1.5; margin-bottom: 20px; }
+.margin-art { width: 110px; height: 100px; }
+.margin-art svg { width: 100%; height: 100%; display: block; }
+.rest-note { grid-column: 1; margin-top: 28px; }
+
+/* ---- Footer: Previous, "Page 1 of 3", Next ---- */
+.page-foot {
+  position: relative; max-width: 1100px; margin: 0 auto;
+  /* three cells: Previous | page count (always centred) | Next */
+  display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 12px;
+  padding: 8px 20px; min-height: 72px;
+}
+.page-foot .rule-over { position: absolute; left: 0; right: 0; top: -4px; height: 8px; }
+.pf-link { white-space: nowrap; display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 8px; text-decoration: none; font-weight: 700; }
+.pf-link:hover { text-decoration: underline; text-underline-offset: 4px; }
+.pf-link.is-off { color: var(--locked); cursor: default; }
+.pf-link.is-off:hover { text-decoration: none; }
+.pf-link[aria-hidden="true"] { visibility: hidden; }   /* Previous on page 1: gone, space kept */
+#prev { justify-self: start; }
+#next { justify-self: end; }
+/* The Next link on a lesson's last page: a big solid button (the box is drawn solid by draw.js). */
+.pf-link.pf-big { color: var(--paper); min-height: 56px; padding: 10px 28px; font-size: 20px; }
+.pf-link.pf-big:hover { text-decoration: underline; background: none; }
+.pf-count { text-align: center; white-space: nowrap; }   /* "Page 7 of 7" never wraps */
+
+/* ---- The bookmark ribbon: hangs from the top edge, near the right. ---- */
+.ribbon { position: absolute; right: 28px; top: 0; width: 28px; height: 96px; z-index: 3; }
+.screen.has-ribbon .bar { padding-right: 84px; }   /* the bar leaves room for it */
+
+/* PHONE (the screen box is 640px or narrower): notes go under the drawings,
+   the divider turns horizontal, the ribbon hangs below the bar. */
+@container (max-width: 640px) {
+  .lesson-grid { grid-template-columns: minmax(0, 1fr); }
+  /* First screen on a phone: drawing first, then the words and Start. */
+  .first-grid { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  .first-right { order: -1; max-width: 300px; }
+  .frames { gap: 16px; }   /* a little room so the pencil boxes do not touch */
+  .margin-col { padding-left: 0; padding-top: 24px; margin-top: 20px; }
+  .margin-col .vrule { left: 0; right: 0; top: 0; bottom: auto; width: auto; height: 8px; }
+  .page { padding: 20px 16px 20px; }
+  .ribbon { right: 16px; top: 68px; height: 64px; }
+  .screen.has-ribbon .bar { padding-right: 14px; }
+  .page-foot { padding: 8px 6px; gap: 4px; grid-template-columns: auto 1fr auto; }
+  /* On a lesson's last page the big Next gets its own full-width row under Previous and the count. */
+  .page-foot.big-next { grid-template-columns: auto 1fr; row-gap: 8px; padding-bottom: 14px; }
+  .big-next .pf-count { text-align: right; }
+  .big-next #next { grid-column: 1 / -1; grid-row: 2; justify-self: stretch; justify-content: center; }
+  .pf-link.pf-big { min-height: 56px; }
+  .pf-link { gap: 6px; padding: 0 4px; }
+  /* The skip link lines up with the heading's left edge; the right padding still clears the ribbon. */
+  .skip { text-align: left; }
+  .hide-phone { display: none; }
+}
