@@ -71,3 +71,7 @@ a.tool-tile { display: block; color: inherit; text-decoration: none; }
 a.tool-tile:hover h3 { text-decoration: underline; text-underline-offset: 4px; }
 .tool-tile.is-open h3 { color: var(--graphite); }
 .tool-tile.is-open .note { color: var(--graphite); }
+
+/* ---- The "Timer done" pop-up (a <dialog> like the Collect box; centred words, one OK button) ---- */
+.timer-done-body { position: relative; padding: 28px 28px 24px; text-align: center; }
+.timer-done-body h3:focus-visible { outline: none; }          /* the heading only holds the focus; it is not a control */

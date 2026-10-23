@@ -43,6 +43,17 @@ function audioContext() {
   return audioCtx;
 }
 
+/* A shared "bus": every sound is plugged into it, and it goes to the speakers. Cutting the bus
+   (silenceAll) silences everything that is still ringing, at once. A new bus is made the next time. */
+let soundBus = null;
+function getBus(ctx) {
+  if (!soundBus) { soundBus = ctx.createGain(); soundBus.connect(ctx.destination); }
+  return soundBus;
+}
+function silenceAll() {
+  if (soundBus) { soundBus.disconnect(); soundBus = null; }
+}
+
 /* One soft note: a sine wave that rises in a hundredth of a second, then fades away. */
 function playNote(ctx, out, freq, start, length, peak, sweepTo) {
   const osc = ctx.createOscillator(), gain = ctx.createGain();
@@ -56,25 +67,29 @@ function playNote(ctx, out, freq, start, length, peak, sweepTo) {
   osc.start(start); osc.stop(start + length + 0.05);
 }
 
-/* Play one of the three built-in sounds. volume is 0 to 100. */
+/* Play one of the three built-in sounds. volume is 0 to 100. Returns how many seconds it rings. */
 function playBuiltIn(choice, volume) {
   const ctx = audioContext();
-  if (!ctx) return;
+  if (!ctx) return 0;
   const master = ctx.createGain();
   master.gain.value = Math.max(0, Math.min(100, volume)) / 100 * 0.6;     // 0.6: leaves headroom so it is never harsh
-  master.connect(ctx.destination);
+  master.connect(getBus(ctx));
   const t = ctx.currentTime + 0.02;
   if (choice === 'chime') {                         // two gentle notes, the second a little higher
     playNote(ctx, master, 784, t, 1.6, 0.5);
     playNote(ctx, master, 1175, t + 0.25, 1.8, 0.35);
+    return 2.1;
   } else if (choice === 'tap') {                    // two short, dry knocks
     playNote(ctx, master, 700, t, 0.14, 0.9, 250);
     playNote(ctx, master, 700, t + 0.22, 0.14, 0.7, 250);
+    return 0.4;
   } else if (choice === 'bell') {                   // a low note with two quieter overtones
     playNote(ctx, master, 196, t, 3.0, 0.6);
     playNote(ctx, master, 196 * 2.76, t, 2.0, 0.25);
     playNote(ctx, master, 196 * 5.4, t, 1.2, 0.12);
+    return 3.0;
   }
+  return 0;
 }
 
 /* ---------- The learner's own sound ---------- */
@@ -97,10 +112,10 @@ function dataUrlToBytes(url) {
 }
 
 /* Play the saved own sound: only the first 15 seconds, fading out over the last 1.5. Returns
-   false if there is no file or the browser cannot play it. */
+   how many seconds it plays, or 0 if there is no file or the browser cannot play it. */
 async function playOwn(volume) {
   const saved = readOwnSound(), ctx = audioContext();
-  if (!saved || !ctx) return false;
+  if (!saved || !ctx) return 0;
   try {
     const buffer = await ctx.decodeAudioData(dataUrlToBytes(saved.data).buffer);
     const src = ctx.createBufferSource(), gain = ctx.createGain();
@@ -111,10 +126,10 @@ async function playOwn(volume) {
     gain.gain.setValueAtTime(peak, t);
     gain.gain.setValueAtTime(peak, t + length - fade);
     gain.gain.linearRampToValueAtTime(0, t + length);            // the fade-out
-    src.connect(gain); gain.connect(ctx.destination);
+    src.connect(gain); gain.connect(getBus(ctx));
     src.start(t, 0, length);                                     // from the start, for at most 15 seconds
-    return true;
-  } catch (e) { return false; }
+    return length;
+  } catch (e) { return 0; }
 }
 
 /* Check and keep a chosen file. Returns { ok: true } or { ok: false, why }. */
@@ -146,17 +161,37 @@ function removeOwnSound() {
 
 /* ---------- Playing a choice ---------- */
 
-/* Play one choice at a volume (used by the Test buttons and the end of the Timer). */
+/* Play one choice at a volume (used by the Test buttons and the alarm). Returns the seconds it rings. */
 async function playSound(choice, volume) {
-  if (choice === 'off') return;
+  if (choice === 'off') return 0;
   soundPlays++;
-  if (choice === 'own') { if (await playOwn(volume)) return; choice = 'chime'; }   // no usable file: the chime instead
-  playBuiltIn(choice, volume);
+  if (choice === 'own') { const len = await playOwn(volume); if (len) return len; choice = 'chime'; }   // no usable file: the chime instead
+  return playBuiltIn(choice, volume);
 }
 
-/* The Timer ran out: play whatever is chosen. */
-function playEndSound() {
-  playSound(timerData.sound.choice, timerData.sound.volume);
+/* ---------- The alarm ----------
+   When the Timer runs out the sound REPEATS until someone presses OK (timer.js calls these).
+   Each time it plays the whole sound, waits ALARM_GAP milliseconds, and plays it again.
+   alarmStop() ends the loop AND cuts any sound still ringing. With the sound Off there is
+   nothing to repeat. */
+let ALARM_GAP = 1500;          // a pause between repeats, in milliseconds
+let alarmOn = false, alarmTimer = null;
+function alarmStart() {
+  if (alarmOn) return;
+  alarmOn = true;
+  const loop = async () => {
+    if (!alarmOn) return;
+    const seconds = await playSound(timerData.sound.choice, timerData.sound.volume);
+    if (!alarmOn || timerData.sound.choice === 'off') return;
+    alarmTimer = setTimeout(loop, (seconds || 2) * 1000 + ALARM_GAP);
+  };
+  loop();
+}
+function alarmStop() {
+  alarmOn = false;
+  clearTimeout(alarmTimer);
+  alarmTimer = null;
+  silenceAll();
 }
 
 /* ---------- The sound box ----------

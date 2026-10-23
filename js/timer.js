@@ -18,7 +18,7 @@
      endAt:     when it ends, as a clock time in milliseconds (used when running)
      sound:     the end sound (see sounds.js)
 
-   Needs progress.js (state, levelInfo), book.js (make), sounds.js (playEndSound).
+   Needs progress.js (state, levelInfo), book.js (make), sounds.js (alarmStart, alarmStop).
    ===================================================================== */
 
 const TIMER_KEY = 'pencave-timer';
@@ -79,6 +79,7 @@ const timerUnlocked = () => levelInfo(state.points).level >= TIMER_LEVEL;
 
 function timerStart() {
   if (timerData.status === 'running') return;
+  timerAlarmStop();                      // starting again ends a finished Timer's alarm
   if (timerData.status === 'done' || timerData.status === 'idle') timerData.remaining = timerData.minutes * 60000;
   timerData.endAt = Date.now() + timerData.remaining;
   timerData.status = 'running';
@@ -97,6 +98,7 @@ function timerPause() {
 
 /* Reset: stop, and go back to the chosen time. */
 function timerReset() {
+  timerAlarmStop();                      // (also what "ok" does, through timerAck)
   timerData.status = 'idle';
   timerData.remaining = timerData.minutes * 60000;
   saveTimer();
@@ -123,6 +125,66 @@ function timerAck() {
   if (timerData.status === 'done') timerReset();
 }
 
+/* ---------- The alarm and its pop-up ----------
+   When the time is up the sound repeats (sounds.js) and a "Timer done" box opens, until the
+   learner presses OK (the box, the chip's "ok", or Esc). The box is a built-in <dialog> opened
+   with showModal(). Browsers stack these: a box opened later sits ON TOP of the ones already
+   open and leaves them untouched. So if a Collect box or an Add-note box is open when the time
+   runs out, they stay exactly as they are underneath, and are there again after OK. */
+function timerDoneBox() {
+  let box = document.getElementById('timer-done');
+  if (!box) {
+    box = make('dialog', 'collect-box');                  // same look as the Collect box
+    box.id = 'timer-done';
+    box.setAttribute('aria-label', 'Timer done');
+    const body = make('div', 'timer-done-body');
+    body.dataset.drawn = 'box';
+    body.dataset.fill = 'paper';
+    body.dataset.seed = 'timer-done';
+    box.append(body);
+    document.body.append(box);
+    box.body = body;
+    /* Closing it any way at all (OK, or the Esc key) means "turn it off". */
+    box.addEventListener('close', () => { if (timerData.status === 'done') timerAck(); });
+  }
+  return box;
+}
+
+function timerAlarmStart() {
+  alarmStart();                                           // sounds.js
+  const box = timerDoneBox(), body = box.body;
+  const name = timerData.label ? timerData.label + ' · ' : '';
+  body.replaceChildren(
+    make('h3', '', 'Timer done'),
+    make('p', 'collect-points', timerData.minutes + (timerData.minutes === 1 ? ' minute' : ' minutes')),
+    make('p', 'note', name + 'Time is up.' + (timerData.sound.choice === 'off' ? '' : ' The sound repeats until you press OK.'))
+  );
+  const ok = make('button', 'btn primary', 'OK');
+  ok.type = 'button';
+  ok.dataset.drawn = 'box';
+  ok.dataset.fill = 'solid';
+  ok.dataset.seed = 'timer-done-ok';
+  ok.addEventListener('click', timerAck);
+  const row = make('div', 'collect-actions');
+  row.append(ok);
+  body.append(row);
+  /* If the learner is typing in a box right now (a journal note, say), do NOT put the focus on
+     OK, or a space or Enter they type could press it by accident. The heading takes the focus. */
+  const heading = body.querySelector('h3');
+  heading.tabIndex = -1;
+  const a = document.activeElement;
+  const typing = a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName);
+  if (!box.open) box.showModal();
+  drawAll(); watchAll();
+  (typing ? heading : ok).focus();
+}
+
+function timerAlarmStop() {
+  alarmStop();                                            // sounds.js: ends the repeating and cuts the sound
+  const box = document.getElementById('timer-done');
+  if (box && box.open) box.close();
+}
+
 /* ---------- The ticking ----------
    Every 250 ms: see if time is up, then tell whoever is showing the clock. The ticking only
    runs while the Timer is running, so an idle Timer costs nothing. */
@@ -134,7 +196,7 @@ function startTicking() {
       timerData.status = 'done';
       timerData.remaining = 0;
       saveTimer();
-      playEndSound();                          // sounds.js
+      timerAlarmStart();                       // the sound repeats and the pop-up opens, until OK
     }
     if (timerData.status !== 'running') { clearInterval(tickHandle); tickHandle = null; }
     timerChanged();
