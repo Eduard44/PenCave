@@ -49,6 +49,7 @@ function showBookParts(on) {
 function render() {
   noteDay();                                       // progress.js: a new day pays 3 points
   updateBar();                                     // the top bar shows the saved level and points
+  updateTimerChip();                               // timer.js: the Timer chip appears from Level 2
   const place = readPlace();
   const lesson = window.PENCAVE_LESSONS[place.lesson];
   const content = document.getElementById('page-content');
@@ -73,6 +74,18 @@ function render() {
     markSeen();
     document.title = 'Your progress · PenCave';
     content.append(progressRoute[1] ? buildMonth(Number(progressRoute[1]), Number(progressRoute[2])) : buildProgress());   // progress-page.js, calendar.js
+    turn.prev = turn.next = null;
+    turn.collect = false;
+    drawAll(); watchAll();
+    return;
+  }
+  /* The Timer page (#timer). A tool page, not a book page: no ribbon, no footer. */
+  if (location.hash === '#timer') {
+    showBookParts(false);
+    ink.level = inkLevel();
+    markSeen();
+    document.title = 'Timer · PenCave';
+    content.append(buildTimerPage());              // timer-page.js
     turn.prev = turn.next = null;
     turn.collect = false;
     drawAll(); watchAll();

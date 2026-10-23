@@ -121,11 +121,17 @@ function buildContents() {
   right.append(vr, make('h2', '', 'Tools'));
   const tiles = make('div', 'tool-tiles');
   TOOLS.forEach((t, i) => {
-    const tile = make('div', 'tool-tile');
-    tile.dataset.drawn = 'dashed';
-    tile.dataset.color = 'locked';
+    /* The Timer is the one tool that exists so far: its tile is a link to #timer. Before Level 2
+       it stays dashed and grey and opens the locked page; from Level 2 it is a solid box with dark
+       words. The other four tiles are exactly as they were. */
+    const isTimer = t.name === 'Timer';
+    const open = isTimer && timerUnlocked();                     // timer.js
+    const tile = make(isTimer ? 'a' : 'div', 'tool-tile' + (open ? ' is-open' : ''));
+    if (isTimer) tile.href = '#timer';
+    tile.dataset.drawn = open ? 'box' : 'dashed';
+    if (!open) tile.dataset.color = 'locked';
     tile.dataset.seed = 'tool' + i;
-    tile.append(make('h3', '', t.name), make('p', 'note', t.level));
+    tile.append(make('h3', '', t.name), make('p', 'note', open ? 'Open the Timer' : t.level));
     tiles.append(tile);
   });
   right.append(tiles, make('p', 'note tools-note', 'Nothing here ever blocks a lesson.'));
