@@ -1,0 +1,19 @@
+/* =====================================================================
+   welcome-back.css  (the strip shown after a long time away; wireframe 3)
+   A boxed strip: the words on the left, two outline buttons on the right.
+   On a phone the buttons go underneath, one above the other.
+   The pencil lines are drawn by draw.js. Colours come from tokens.css.
+   ===================================================================== */
+.welcome-strip { max-width: 1100px; margin: 0 auto; padding: 18px 28px 0; }
+.welcome-strip[hidden] { display: none; }
+/* On book pages the bookmark ribbon hangs down the right edge: keep the strip clear of it. */
+.has-ribbon .welcome-strip { padding-right: 84px; }
+.welcome-box { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 24px; padding: 16px 20px; }
+.welcome-text { flex: 1 1 260px; min-width: 0; }
+.welcome-text p + p { margin-top: 2px; }
+.welcome-buttons { display: flex; flex-wrap: wrap; gap: 10px 12px; }
+@container (max-width: 640px) {
+  .welcome-strip { padding: 14px 16px 0; }
+  .has-ribbon .welcome-strip { padding-right: 60px; }
+  .welcome-buttons { flex-direction: column; align-items: stretch; width: 100%; }
+}

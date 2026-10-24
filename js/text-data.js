@@ -19,6 +19,15 @@
    ===================================================================== */
 window.PENCAVE_TEXT = {
 
+  /* The welcome-back strip, shown after about 30 days away (welcome-back.js). Two short lines
+     and the words on its two buttons. */
+  welcomeBack: {
+    line1: '[YOUR TEXT HERE: welcome back, for example: "Welcome back. It has been a while."]',
+    line2: '[YOUR TEXT HERE: offer the basics again, for example: "Want to go over the basics again?"]',
+    volumeButton: '[YOUR TEXT HERE: Go to Volume 1]',
+    continueButton: '[YOUR TEXT HERE: Continue where I was]'
+  },
+
   about: {
     title: 'About PenCave',
     updated: '[YOUR DATE HERE: for example 24 Oct 2026]',
