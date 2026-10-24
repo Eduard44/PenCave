@@ -157,6 +157,7 @@ async function saveOwnSound(file) {
 function removeOwnSound() {
   try { localStorage.removeItem(OWN_SOUND_KEY); } catch (e) { /* ignore */ }
   if (timerData.sound.choice === 'own') { timerData.sound.choice = 'chime'; saveTimer(); }
+  if (typeof pomoOwnSoundRemoved === 'function') pomoOwnSoundRemoved();     // pomodoro.js: its two sounds too
 }
 
 /* ---------- Playing a choice ---------- */
@@ -175,14 +176,16 @@ async function playSound(choice, volume) {
    alarmStop() ends the loop AND cuts any sound still ringing. With the sound Off there is
    nothing to repeat. */
 let ALARM_GAP = 1500;          // a pause between repeats, in milliseconds
-let alarmOn = false, alarmTimer = null;
-function alarmStart() {
+let alarmOn = false, alarmTimer = null, alarmSound = null;
+/* snd is { choice, volume }. The Timer passes nothing and gets its own; the Pomodoro passes its own. */
+function alarmStart(snd) {
   if (alarmOn) return;
   alarmOn = true;
+  alarmSound = snd || timerData.sound;
   const loop = async () => {
     if (!alarmOn) return;
-    const seconds = await playSound(timerData.sound.choice, timerData.sound.volume);
-    if (!alarmOn || timerData.sound.choice === 'off') return;
+    const seconds = await playSound(alarmSound.choice, alarmSound.volume);
+    if (!alarmOn || alarmSound.choice === 'off') return;
     alarmTimer = setTimeout(loop, (seconds || 2) * 1000 + ALARM_GAP);
   };
   loop();
@@ -233,9 +236,14 @@ function linkButton(label, ariaLabel, onClick) {
   return b;
 }
 
-function openSoundBox(onClose) {
+/* target says WHICH sound the box edits: { snd: {choice, volume}, save: function, title: words }.
+   With nothing passed it edits the Timer's sound, as before. */
+function timerSoundTarget() { return { snd: timerData.sound, save: saveTimer, title: 'Sound at the end' }; }
+function openSoundBox(onClose, target) {
   const box = soundBox();
   box.onclose = onClose || null;
+  box.target = target || timerSoundTarget();
+  box.setAttribute('aria-label', box.target.title);
   showSoundMain(box);
   if (!box.open) box.showModal();
   drawAll(); watchAll();
@@ -244,12 +252,12 @@ function openSoundBox(onClose) {
 /* The main view: pick a sound, test it, set the volume. */
 function showSoundMain(box) {
   const body = box.body;
-  const snd = timerData.sound;
-  body.replaceChildren(make('h3', '', 'Sound at the end'));
+  const snd = box.target.snd, save = box.target.save;
+  body.replaceChildren(make('h3', '', box.target.title));
 
   const group = make('div', 'radios');
   group.setAttribute('role', 'radiogroup');
-  group.setAttribute('aria-label', 'Sound at the end');
+  group.setAttribute('aria-label', box.target.title);
   SOUND_CHOICES.forEach(c => {
     const row = make('div', 'radio-row');
     const label = make('label', 'choice');
@@ -265,7 +273,7 @@ function showSoundMain(box) {
     input.addEventListener('change', () => {
       if (c.key === 'own' && !readOwnSound()) { showSoundOwn(box); return; }   // nothing chosen yet: go and add one
       snd.choice = c.key;
-      saveTimer();
+      save();
     });
     row.append(label);
     if (c.key === 'own') {
@@ -285,7 +293,7 @@ function showSoundMain(box) {
   const vol = make('input');
   vol.type = 'range'; vol.min = '0'; vol.max = '100'; vol.value = String(snd.volume);
   vol.setAttribute('aria-label', 'Volume');
-  vol.addEventListener('input', () => { snd.volume = Number(vol.value); saveTimer(); });
+  vol.addEventListener('input', () => { snd.volume = Number(vol.value); save(); });
   body.append(vol);
   const keepNote = make('p', 'note', 'Each device keeps its own choice. ');
   const privacy = make('a', '', 'Privacy');
@@ -318,7 +326,7 @@ function showSoundOwn(box, message) {
     input.value = '';
     if (!file) return;
     const result = await saveOwnSound(file);
-    if (result.ok) { timerData.sound.choice = 'own'; saveTimer(); showSoundOwn(box); }
+    if (result.ok) { box.target.snd.choice = 'own'; box.target.save(); showSoundOwn(box); }
     else showSoundOwn(box, result.why);
   });
   body.append(input);
@@ -331,7 +339,7 @@ function showSoundOwn(box, message) {
   if (saved && !message) {
     body.append(make('p', 'note', saved.name + ' · the first ' + OWN_SOUND_SECONDS + ' seconds play'));
     const row = make('div', 'jrow');
-    row.append(soundButton('Test', () => playSound('own', timerData.sound.volume)),
+    row.append(soundButton('Test', () => playSound('own', box.target.snd.volume)),
                linkButton('Remove', 'Remove my own sound', () => { removeOwnSound(); showSoundOwn(box); }),
                linkButton('Choose another file', null, () => input.click()));
     body.append(row);

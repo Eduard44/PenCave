@@ -120,18 +120,23 @@ function buildContents() {
   vr.dataset.drawn = 'rule'; vr.dataset.seed = 'tools-vrule';
   right.append(vr, make('h2', '', 'Tools'));
   const tiles = make('div', 'tool-tiles');
+  /* The tools that have a page so far. */
+  const TOOL_PAGES = {
+    Timer:    { href: '#timer',    unlocked: timerUnlocked, openWords: 'Open the Timer' },
+    Pomodoro: { href: '#pomodoro', unlocked: pomoUnlocked,  openWords: 'Open the Pomodoro' }
+  };
   TOOLS.forEach((t, i) => {
-    /* The Timer is the one tool that exists so far: its tile is a link to #timer. Before Level 2
-       it stays dashed and grey and opens the locked page; from Level 2 it is a solid box with dark
-       words. The other four tiles are exactly as they were. */
-    const isTimer = t.name === 'Timer';
-    const open = isTimer && timerUnlocked();                     // timer.js
-    const tile = make(isTimer ? 'a' : 'div', 'tool-tile' + (open ? ' is-open' : ''));
-    if (isTimer) tile.href = '#timer';
+    /* The Timer and the Pomodoro exist so far: their tiles are links. Before their level a tile stays
+       dashed and grey and opens the locked page; once unlocked it is a solid box with dark words.
+       The other three tiles are exactly as they were. */
+    const page = TOOL_PAGES[t.name];
+    const open = !!page && page.unlocked();                      // timer.js, pomodoro.js
+    const tile = make(page ? 'a' : 'div', 'tool-tile' + (open ? ' is-open' : ''));
+    if (page) tile.href = page.href;
     tile.dataset.drawn = open ? 'box' : 'dashed';
     if (!open) tile.dataset.color = 'locked';
     tile.dataset.seed = 'tool' + i;
-    tile.append(make('h3', '', t.name), make('p', 'note', open ? 'Open the Timer' : t.level));
+    tile.append(make('h3', '', t.name), make('p', 'note', open ? page.openWords : t.level));
     tiles.append(tile);
   });
   right.append(tiles, make('p', 'note tools-note', 'Nothing here ever blocks a lesson.'));

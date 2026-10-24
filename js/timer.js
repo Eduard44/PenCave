@@ -122,7 +122,10 @@ function timerSetLabel(text) {
 
 /* "ok" on a finished Timer: back to ready. */
 function timerAck() {
-  if (timerData.status === 'done') timerReset();
+  if (timerData.status === 'done') {
+    timerReset();
+    if (typeof pomoResumeAlarm === 'function') pomoResumeAlarm();   // pomodoro.js: if a Pomodoro alarm was also waiting, it keeps ringing
+  }
 }
 
 /* ---------- The alarm and its pop-up ----------

@@ -16,7 +16,7 @@
 
 /* Everything PenCave keeps in the browser. Erase removes all of these. (If a new key is ever
    added to the site, add it here too.) */
-const ERASE_KEYS = ['pencave-progress', 'pencave-seen', 'pencave-visit', 'pencave-timer', 'pencave-own-sound'];
+const ERASE_KEYS = ['pencave-progress', 'pencave-seen', 'pencave-visit', 'pencave-timer', 'pencave-pomodoro', 'pencave-own-sound'];
 
 /* A "Download my notes" link that downloads RIGHT WHERE YOU ARE: no change of page. It looks like a
    link but is a button, because it does something instead of going somewhere. It downloads the
@@ -127,11 +127,13 @@ function openEraseBox() {
 /* Erase it all, then start again as a brand-new visitor. */
 function eraseEverything() {
   timerAlarmStop();                                          // stop a running alarm and close its pop-up
+  pomoAlarmStop();                                           // (and the Pomodoro's)
   ERASE_KEYS.forEach(k => { try { localStorage.removeItem(k); } catch (e) { /* ignore */ } });
   /* Empty the copies the page holds in memory too, so nothing is written back by accident. */
   Object.keys(state).forEach(k => delete state[k]);
   Object.assign(state, freshProgress());
   Object.assign(timerData, freshTimer());
+  Object.assign(pomoData, freshPomo());
   location.hash = '#l1p1';                                   // the very first screen
   location.reload();                                         // a clean start
 }

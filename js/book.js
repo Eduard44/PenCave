@@ -50,6 +50,7 @@ function render() {
   noteDay();                                       // progress.js: a new day pays 3 points
   updateBar();                                     // the top bar shows the saved level and points
   updateTimerChip();                               // timer.js: the Timer chip appears from Level 2
+  updatePomodoroChip();                            // pomodoro.js: the Pomodoro chip appears from Level 3
   const place = readPlace();
   const lesson = window.PENCAVE_LESSONS[place.lesson];
   const content = document.getElementById('page-content');
@@ -86,6 +87,18 @@ function render() {
     markSeen();
     document.title = 'Timer · PenCave';
     content.append(buildTimerPage());              // timer-page.js
+    turn.prev = turn.next = null;
+    turn.collect = false;
+    drawAll(); watchAll();
+    return;
+  }
+  /* The Pomodoro page (#pomodoro). A tool page like the Timer: no ribbon, no footer. */
+  if (location.hash === '#pomodoro') {
+    showBookParts(false);
+    ink.level = inkLevel();
+    markSeen();
+    document.title = 'Pomodoro · PenCave';
+    content.append(buildPomodoroPage());           // pomodoro-page.js
     turn.prev = turn.next = null;
     turn.collect = false;
     drawAll(); watchAll();
