@@ -253,6 +253,26 @@ const NOTES_PARTS = [
   { key: 'notes',   label: 'All my notes, with dates' }
 ];
 
+/* THE DOWNLOAD ITSELF, in one place, so it can be started from anywhere (the Save file block,
+   the Privacy page, the Erase box) without leaving the page you are on.
+   "parts" says which parts go in the readable .txt (see NOTES_PARTS); if none is on, only the
+   .json downloads. Returns the sentence to show the learner. */
+function downloadSaveNow(parts) {
+  const day = todayText();
+  const jsonName = 'pencave-save-' + day + '.json';
+  const txtName = 'pencave-notes-' + day + '.txt';
+  downloadText(jsonName, buildSaveJson(), 'application/json');
+  if (NOTES_PARTS.some(p => parts[p.key])) {
+    /* A short pause, because some browsers refuse two downloads at the very same moment. */
+    setTimeout(() => downloadText(txtName, buildNotesText(parts), 'text/plain'), 400);
+    return 'Downloaded ' + jsonName + ' and ' + txtName + '. If your browser asks to allow more than one download, choose Allow.';
+  }
+  return 'Downloaded ' + jsonName + '. Nothing is ticked, so there is no readable notes file.';
+}
+
+/* Everything on, for the "Download my notes" links outside the Save file block. */
+const allNotesParts = () => Object.fromEntries(NOTES_PARTS.map(p => [p.key, true]));
+
 function buildSaveBlock() {
   const sec = progressSection('Save file', 'pr-save');             // progress-page.js
   sec.classList.add('save-block');
@@ -316,19 +336,6 @@ function buildSaveBlock() {
   sec.append(input);
   load.addEventListener('click', () => input.click());
 
-  dl.addEventListener('click', () => {
-    const day = todayText();
-    const jsonName = 'pencave-save-' + day + '.json';
-    const txtName = 'pencave-notes-' + day + '.txt';
-    downloadText(jsonName, buildSaveJson(), 'application/json');
-    const parts = on;
-    if (NOTES_PARTS.some(p => parts[p.key])) {
-      /* A short pause, because some browsers refuse two downloads at the very same moment. */
-      setTimeout(() => downloadText(txtName, buildNotesText(parts), 'text/plain'), 400);
-      status.textContent = 'Downloaded ' + jsonName + ' and ' + txtName + '. If your browser asks to allow more than one download, choose Allow.';
-    } else {
-      status.textContent = 'Downloaded ' + jsonName + '. Nothing is ticked, so there is no readable notes file.';
-    }
-  });
+  dl.addEventListener('click', () => { status.textContent = downloadSaveNow(on); });
   return sec;
 }

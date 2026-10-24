@@ -18,21 +18,19 @@
    added to the site, add it here too.) */
 const ERASE_KEYS = ['pencave-progress', 'pencave-seen', 'pencave-visit', 'pencave-timer', 'pencave-own-sound'];
 
-/* Go to Your progress and scroll to the Save file block (where "Download my save" is). */
-function goToSaveBlock() {
-  setTimeout(() => { const block = document.querySelector('.save-block'); if (block) block.scrollIntoView(); }, 80);
-}
-
-/* A "Download my notes →" link that opens Your progress at the Save file block.
-   "beforeGo" (optional) runs first, for example to close a box. */
-function makeDownloadLink(label, beforeGo) {
-  const link = make('a', 'text-link', label + ' ');
-  link.href = '#progress';
-  const arrow = make('i', 'icon');
-  arrow.dataset.icon = 'arrow-right';
-  link.append(arrow);
-  link.addEventListener('click', () => { if (beforeGo) beforeGo(); goToSaveBlock(); });
-  return link;
+/* A "Download my notes" link that downloads RIGHT WHERE YOU ARE: no change of page. It looks like a
+   link but is a button, because it does something instead of going somewhere. It downloads the
+   same two files as "Download my save" on Your progress, with every part of the readable file
+   included (save-file.js, downloadSaveNow), and says so in a line underneath. */
+function makeDownloadLink(label) {
+  const wrap = make('span', 'text-download');
+  const link = make('button', 'text-link', label);
+  link.type = 'button';
+  const status = make('span', 'note text-download-status');
+  status.setAttribute('aria-live', 'polite');
+  link.addEventListener('click', () => { status.textContent = downloadSaveNow(allNotesParts()); });
+  wrap.append(link, status);
+  return wrap;
 }
 
 /* ---------- The page ---------- */
@@ -105,7 +103,7 @@ function openEraseBox() {
     make('p', '', 'If you want to keep them, download your notes first.')
   );
   const dl = make('p', 'text-action');
-  dl.append(makeDownloadLink('Download my notes first', () => box.close()));   // close the box, then go to the Save file block
+  dl.append(makeDownloadLink('Download my notes first'));                      // downloads here; the box stays open
   body.append(dl);
 
   /* The safe choice first, solid, and focused. Esc also keeps everything. */
