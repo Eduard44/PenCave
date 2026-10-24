@@ -91,6 +91,19 @@ function render() {
     drawAll(); watchAll();
     return;
   }
+  /* The About and Privacy pages (#about, #privacy). Text pages, not book pages. */
+  const textRoute = /^#(about|privacy)$/.exec(location.hash);
+  if (textRoute) {
+    showBookParts(false);
+    ink.level = inkLevel();
+    markSeen();
+    document.title = window.PENCAVE_TEXT[textRoute[1]].title + ' · PenCave';
+    content.append(buildTextPage(textRoute[1]));   // text-pages.js (the words are in text-data.js)
+    turn.prev = turn.next = null;
+    turn.collect = false;
+    drawAll(); watchAll();
+    return;
+  }
   showBookParts(true);
 
   if (!lesson) {                                    // no such lesson: say so plainly

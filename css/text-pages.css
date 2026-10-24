@@ -1,0 +1,52 @@
+/* =====================================================================
+   text-pages.css  (About, Privacy, the Erase box, and the small links to them)
+   Wireframe 7: a narrow reading column and a margin column, like the lesson pages.
+   Pencil lines are drawn by draw.js (data-drawn). Colours come from tokens.css.
+   ===================================================================== */
+
+/* Two columns: the words (about 62 characters wide, easy to read) and the margin (230px).
+   The grid areas let "In short" and "Last updated" move on a phone without changing the HTML. */
+.text-page {
+  max-width: 1100px;
+  display: grid;
+  grid-template-columns: minmax(0, 62ch) 230px;
+  grid-template-areas: "main short" "main updated";
+  grid-template-rows: auto 1fr;
+  gap: 0 56px;
+  justify-content: start;
+}
+.text-main { grid-area: main; min-width: 0; }
+.text-short { grid-area: short; padding-left: 24px; margin-top: 12px; }
+.text-short h3 { margin-bottom: 6px; }
+.text-short p { font-size: var(--size-note); line-height: 1.5; }
+.text-updated { grid-area: updated; padding-left: 24px; align-self: start; margin-top: 24px; }
+/* The pencil line on the left of the margin column. It sits in the same cells as the two notes. */
+.text-rule { grid-area: 1 / 2 / 3 / 3; justify-self: start; width: 8px; }
+
+/* Sections */
+.text-section { position: relative; margin-top: 34px; }
+.text-section h2 { margin-bottom: 8px; }
+.text-section p + p { margin-top: 12px; }
+.text-section.is-later { padding: 14px 18px; color: var(--locked); }      /* still to decide or write */
+.text-section.is-later h2 { color: var(--locked); font-size: 20px; }
+.text-action { margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+.text-link { display: inline-flex; align-items: center; gap: 4px; min-height: 44px; font-weight: 700; }
+
+/* PHONE: one column. "In short" first, the words, then "Last updated". The drawn line goes. */
+@container (max-width: 640px) {
+  .text-page { grid-template-columns: minmax(0, 1fr); grid-template-areas: "short" "main" "updated"; grid-template-rows: auto; }
+  .text-rule { display: none; }
+  .text-short { padding-left: 0; margin: 0 0 26px; }
+  .text-updated { padding-left: 0; margin-top: 34px; }
+}
+
+/* ---- The Erase box (a <dialog> like the Collect box) ---- */
+.erase-body p { margin-top: 10px; }
+.erase-body h3 + p { margin-top: 10px; }
+.erase-body .text-action { margin-top: 12px; }
+.erase-body .jrow { margin-top: 20px; }
+
+/* ---- The small links that lead here ---- */
+.kept-wrap > a { display: inline-flex; align-items: center; min-height: 44px; font-size: var(--size-note); }   /* "How your data is kept" on Your progress */
+.foot-items a { display: inline-flex; align-items: center; min-height: 44px; }                                /* About / Privacy on Contents */
+.sound-body .note a { display: inline-flex; align-items: center; min-height: 44px; }                           /* Privacy in the sound box */

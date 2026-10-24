@@ -142,13 +142,12 @@ function buildRecords() {
   return sec;
 }
 
-/* How your data is kept: a small line that opens. The words are the owner's to write. */
+/* How your data is kept: a small link to the Privacy page, where the owner's words are. */
 function buildDataKept() {
   const wrap = make('div', 'progress-section kept-wrap');
-  const d = make('details', 'kept');
-  d.append(make('summary', '', 'How your data is kept'));
-  d.append(make('p', 'note', '[YOUR TEXT HERE: how your data is kept. Everything stays in this browser and PenCave holds no copy.]'));
-  wrap.append(make('p', 'note', 'Saved in this browser only.'), d);
+  const link = make('a', '', 'How your data is kept');
+  link.href = '#privacy';
+  wrap.append(make('p', 'note', 'Saved in this browser only.'), link);
   return wrap;
 }
 

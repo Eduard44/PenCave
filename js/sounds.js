@@ -287,7 +287,12 @@ function showSoundMain(box) {
   vol.setAttribute('aria-label', 'Volume');
   vol.addEventListener('input', () => { snd.volume = Number(vol.value); saveTimer(); });
   body.append(vol);
-  body.append(make('p', 'note', 'Each device keeps its own choice.'));
+  const keepNote = make('p', 'note', 'Each device keeps its own choice. ');
+  const privacy = make('a', '', 'Privacy');
+  privacy.href = '#privacy';
+  privacy.addEventListener('click', () => box.close());          // close the box, then the link takes you there
+  keepNote.append(privacy);
+  body.append(keepNote);
 
   const row = make('div', 'jrow');
   row.append(soundButton('Done', () => box.close(), true));

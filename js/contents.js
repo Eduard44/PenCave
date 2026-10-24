@@ -135,8 +135,14 @@ function buildContents() {
     tiles.append(tile);
   });
   right.append(tiles, make('p', 'note tools-note', 'Nothing here ever blocks a lesson.'));
-  /* Plain grey words: those pages come in later steps. */
-  right.append(make('p', 'note foot-items', 'Learning methods · About · Privacy (these pages come later)'));
+  /* About and Privacy are real links now. Learning methods is still to come, so it stays plain grey words. */
+  const foot = make('p', 'note foot-items', 'Learning methods (coming soon) · ');
+  const aboutLink = make('a', '', 'About');
+  aboutLink.href = '#about';
+  const privacyLink = make('a', '', 'Privacy');
+  privacyLink.href = '#privacy';
+  foot.append(aboutLink, ' · ', privacyLink);
+  right.append(foot);
   wrap.append(right);
   return wrap;
 }
