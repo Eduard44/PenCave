@@ -22,7 +22,6 @@
 .settings-cell .field-label { margin-top: 16px; }
 .pomodoro-page .custom-field { width: 140px; max-width: 100%; }
 .pomodoro-page > .note { margin-top: 14px; }
-.pomo-about { color: var(--locked); }
 @container (max-width: 640px) {
   .settings-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 16px; }
 }

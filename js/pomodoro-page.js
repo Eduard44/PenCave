@@ -34,7 +34,9 @@ function buildPomodoroLocked(wrap) {
   box.append(row);
   wrap.append(box);
   wrap.append(make('p', 'note', 'Nothing in the lessons is locked.'));
-  wrap.append(make('p', 'note', 'Learning methods: coming soon'));
+  const read = make('a', 'about-method', 'Read about this method →');
+  read.href = '#methods/pomodoro';
+  wrap.append(read, make('p', 'note', 'Free to read.'));
   return wrap;
 }
 
@@ -143,8 +145,10 @@ function buildPomodoroPage() {
     soundNames[s[0]] = name;
   });
 
-  /* The Learning methods page does not exist yet, so plain grey words, not a link. */
-  wrap.append(make('p', 'note pomo-about', 'About this method: coming soon'));
+  /* A link to the reading page about this method. */
+  const about = make('a', 'about-method', 'About this method →');
+  about.href = '#methods/pomodoro';
+  wrap.append(about);
 
   /* ---- The same journal button as everywhere (no lesson tag) ---- */
   wrap.append(makeNoteButton(null, null, null, render));

@@ -1,0 +1,27 @@
+/* =====================================================================
+   methods.css  (the Learning methods list and its reading pages)
+   A method's page reuses the About/Privacy layout (text-pages.css). This file adds the list
+   page, the tiles, and the small back link. Pencil borders are drawn by draw.js (data-drawn).
+   ===================================================================== */
+
+/* The list page. */
+.methods-page { max-width: 640px; }
+.methods-page > .note { margin-top: 4px; }
+.method-tiles { display: grid; gap: 16px; margin-top: 22px; }
+.method-tile { position: relative; padding: 16px 20px; }
+.method-tile h2 { margin-bottom: 4px; }
+.method-tile.is-open h2 { color: var(--graphite); }
+.method-tile:not(.is-open) { color: var(--locked); }        /* grey, but readable: it is still yours to read */
+.method-links { margin-top: 6px; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 20px; }
+.method-links .text-link { min-height: 44px; }
+.method-more { padding: 14px 20px; position: relative; }
+
+/* On a method page: the small way back, and the list of sources. */
+.back-link { display: inline-flex; align-items: center; min-height: 44px; font-size: var(--size-note); }
+.method-sources { margin: 0; padding-left: 20px; }
+.method-sources li + li { margin-top: 4px; }
+.method-sources a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 400; text-decoration: underline; text-underline-offset: 4px; }
+.text-section .text-link[href^="http"] { font-weight: 400; }
+
+/* The "About this method" link on the tool pages. */
+.about-method { display: inline-flex; align-items: center; min-height: 44px; margin-top: 10px; font-weight: 700; }

@@ -140,8 +140,11 @@ function buildContents() {
     tiles.append(tile);
   });
   right.append(tiles, make('p', 'note tools-note', 'Nothing here ever blocks a lesson.'));
-  /* About and Privacy are real links now. Learning methods is still to come, so it stays plain grey words. */
-  const foot = make('p', 'note foot-items', 'Learning methods (coming soon) · ');
+  /* Learning methods, About and Privacy are all real links now. */
+  const foot = make('p', 'note foot-items');
+  const methodsLink = make('a', '', 'Learning methods');
+  methodsLink.href = '#methods';
+  foot.append(methodsLink, ' · ');
   const aboutLink = make('a', '', 'About');
   aboutLink.href = '#about';
   const privacyLink = make('a', '', 'Privacy');

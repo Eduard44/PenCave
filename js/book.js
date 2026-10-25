@@ -104,6 +104,20 @@ function render() {
     drawAll(); watchAll();
     return;
   }
+  /* The Learning methods pages (#methods and #methods/<name>). Reading pages, not book pages. */
+  const methodRoute = /^#methods(?:\/([a-z-]+))?$/.exec(location.hash);
+  if (methodRoute) {
+    showBookParts(false);
+    ink.level = inkLevel();
+    markSeen();
+    const method = methodRoute[1] && methodBySlug(methodRoute[1]);       // methods.js
+    document.title = (method ? method.title : 'Learning methods') + ' · PenCave';
+    content.append(method ? buildMethodPage(method.slug) : buildMethodsList());
+    turn.prev = turn.next = null;
+    turn.collect = false;
+    drawAll(); watchAll();
+    return;
+  }
   /* The About and Privacy pages (#about, #privacy). Text pages, not book pages. */
   const textRoute = /^#(about|privacy)$/.exec(location.hash);
   if (textRoute) {

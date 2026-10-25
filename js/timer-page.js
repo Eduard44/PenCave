@@ -39,8 +39,10 @@ function buildTimerLocked(wrap) {
   wrap.append(box);
 
   wrap.append(make('p', 'note', 'Nothing in the lessons is locked.'));
-  /* The Learning methods page does not exist yet, so this is plain words, not a link. */
-  wrap.append(make('p', 'note', 'Learning methods: coming soon'));
+  /* The method's reading page is free to read at every level (wireframe 6 E). */
+  const read = make('a', 'about-method', 'Read about this method →');
+  read.href = '#methods/timed-drills';
+  wrap.append(read, make('p', 'note', 'Free to read.'));
   return wrap;
 }
 
@@ -160,6 +162,11 @@ function buildTimerPage() {
   change.addEventListener('click', () => openSoundBox(() => { soundName.textContent = soundLabel(timerData.sound.choice); }));
   soundRow.append(soundName, change);
   wrap.append(soundRow);
+
+  /* ---- A link to the reading page about this method ---- */
+  const about = make('a', 'about-method', 'About this method →');
+  about.href = '#methods/timed-drills';
+  wrap.append(about);
 
   /* ---- The same journal button as everywhere (no lesson tag) ---- */
   wrap.append(makeNoteButton(null, null, null, render));
