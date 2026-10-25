@@ -53,7 +53,6 @@ button.text-link:hover { text-decoration-thickness: 3px; }
 
 /* ---- The small links that lead here ---- */
 .kept-wrap > a { display: inline-flex; align-items: center; min-height: 44px; font-size: var(--size-note); }   /* "How your data is kept" on Your progress */
-.foot-items a { display: inline-flex; align-items: center; min-height: 44px; }                                /* About / Privacy on Contents */
 .sound-body .note a { display: inline-flex; align-items: center; min-height: 44px; }                           /* Privacy in the sound box */
 
 /* ---- The site footer: "About · Privacy" at the bottom of every page ---- */

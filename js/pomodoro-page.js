@@ -34,9 +34,6 @@ function buildPomodoroLocked(wrap) {
   box.append(row);
   wrap.append(box);
   wrap.append(make('p', 'note', 'Nothing in the lessons is locked.'));
-  const read = make('a', 'about-method', 'Read about this method →');
-  read.href = '#methods/pomodoro';
-  wrap.append(read, make('p', 'note', 'Free to read.'));
   return wrap;
 }
 

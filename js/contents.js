@@ -139,18 +139,14 @@ function buildContents() {
     tile.append(make('h3', '', t.name), make('p', 'note', open ? page.openWords : t.level));
     tiles.append(tile);
   });
-  right.append(tiles, make('p', 'note tools-note', 'Nothing here ever blocks a lesson.'));
-  /* Learning methods, About and Privacy are all real links now. */
-  const foot = make('p', 'note foot-items');
-  const methodsLink = make('a', '', 'Learning methods');
-  methodsLink.href = '#methods';
-  foot.append(methodsLink, ' · ');
-  const aboutLink = make('a', '', 'About');
-  aboutLink.href = '#about';
-  const privacyLink = make('a', '', 'Privacy');
-  privacyLink.href = '#privacy';
-  foot.append(aboutLink, ' · ', privacyLink);
-  right.append(foot);
+  /* The Learning methods tile: bigger than the tools, always open (a link to #methods). About and Privacy are
+     not here: they are in the small footer on every page. */
+  const methods = make('a', 'methods-tile');
+  methods.href = '#methods';
+  methods.dataset.drawn = 'box';
+  methods.dataset.seed = 'methods-tile';
+  methods.append(make('h3', '', 'Learning methods'), make('p', 'note', 'How each method works, and why it helps'));
+  right.append(tiles, methods, make('p', 'note tools-note', 'Nothing here ever blocks a lesson.'));
   wrap.append(right);
   return wrap;
 }

@@ -25,3 +25,12 @@
 
 /* The "About this method" link on the tool pages. */
 .about-method { display: inline-flex; align-items: center; min-height: 44px; margin-top: 10px; font-weight: 700; }
+
+/* ---- The "Just unlocked" pop-up (unlocks.js) ---- */
+.unlock-body { position: relative; padding: 30px 30px 24px; text-align: center; }
+.unlock-title:focus-visible { outline: none; }
+.unlock-item { margin-top: 20px; }
+.unlock-item h3 { margin-bottom: 2px; }
+.unlock-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 12px; margin-top: 12px; }
+.unlock-body .collect-actions { margin-top: 22px; }
+.unlock-note { margin-top: 14px; }

@@ -1,12 +1,12 @@
 /* =====================================================================
    methods.js  (the Learning methods pages: #methods and #methods/<slug>)
    book.js calls buildMethodsList() for #methods and buildMethodPage(slug) for a single method.
-   They are reading pages, not book pages: no ribbon, no Previous or Next. They are free to read
-   at every level; a method's TOOL (the Timer, the Pomodoro) is what unlocks.
+   They are reading pages, not book pages: no ribbon, no Previous or Next. A method's page opens when
+   its level is reached (Spaced practice has no tool, so it is always open); before that the page is
+   a short teaser. The pop-up after the level-up (unlocks.js) leads to it.
    The words and sources come from methods-data.js.
 
-   The list (wireframe 6 D): "Dark means ready to use. Grey means it unlocks later, and is
-   still yours to read." A dark (solid) tile is ready; a grey dashed tile unlocks later.
+   The list (wireframe 6 D): a dark (solid) tile is unlocked; a grey dashed tile unlocks later.
    A method page uses the same layout as About and Privacy (text-pages.css): the words on the
    left, "In short" and "Last updated" in the margin.
 
@@ -15,8 +15,11 @@
 
 const methodBySlug = slug => window.PENCAVE_METHODS.find(m => m.slug === slug) || null;
 
-/* Is this method's tool ready to use right now? A method with no tool (Spaced practice) is always ready. */
-const methodReady = m => !m.tool || (m.tool.built && m.tool.ready());
+/* Is the method UNLOCKED? A method with no tool (Spaced practice) is always open. Otherwise it opens at
+   its tool's level, even if the tool itself is not made yet (Daily warm-up). */
+const methodUnlocked = m => !m.tool || levelInfo(state.points).level >= m.tool.level;
+/* Can its tool be used right now? */
+const methodToolReady = m => !!m.tool && m.tool.built && methodUnlocked(m);
 
 /* A link made of text. */
 function methodLink(text, href, external) {
@@ -30,20 +33,21 @@ function methodLink(text, href, external) {
 function buildMethodsList() {
   const wrap = make('div', 'methods-page');
   wrap.append(make('h1', 'page-title', 'Learning methods'));
-  wrap.append(make('p', 'note', 'Dark means ready to use. Grey means it unlocks later, and is still yours to read.'));
+  wrap.append(make('p', 'note', 'Dark means unlocked. Grey means it unlocks at a later level.'));
 
   const tiles = make('div', 'method-tiles');
   window.PENCAVE_METHODS.forEach((m, i) => {
-    const ready = methodReady(m);
-    const tile = make('div', 'method-tile' + (ready ? ' is-open' : ''));
-    tile.dataset.drawn = ready ? 'box' : 'dashed';
-    if (!ready) tile.dataset.color = 'locked';
+    const open = methodUnlocked(m);
+    const tile = make('div', 'method-tile' + (open ? ' is-open' : ''));
+    tile.dataset.drawn = open ? 'box' : 'dashed';
+    if (!open) tile.dataset.color = 'locked';
     tile.dataset.seed = 'method' + i;
     const row = make('p', 'method-links');
-    row.append(methodLink('Read more →', '#methods/' + m.slug));
-    if (m.tool) {
-      if (ready) row.append(methodLink('Open ' + m.tool.name + ' →', m.tool.href));
-      else row.append(make('span', 'note', 'Level ' + m.tool.level + ' · ' + m.tool.points + ' points'));
+    if (open) {
+      row.append(methodLink('Read more →', '#methods/' + m.slug));
+      if (methodToolReady(m)) row.append(methodLink('Open ' + m.tool.name + ' →', m.tool.href));
+    } else {
+      row.append(make('span', 'note', 'Level ' + m.tool.level + ' · ' + m.tool.points + ' points'));   // locked: no link, the words say when
     }
     tile.append(make('h2', '', m.title), make('p', '', m.line), row);
     tiles.append(tile);
@@ -59,10 +63,40 @@ function buildMethodsList() {
   return wrap;
 }
 
+/* ---------- A method that is not unlocked yet: a short teaser ----------
+   The full explanation opens when the level is reached (the pop-up after the level-up leads to it). */
+function buildMethodTeaser(m) {
+  const wrap = make('div', 'methods-page');
+  const back = make('a', 'back-link', '← Learning methods');
+  back.href = '#methods';
+  wrap.append(back, make('h1', 'page-title', m.title), make('p', '', m.line));
+  const need = m.tool.points;
+  const box = make('div', 'locked-tile');
+  box.dataset.drawn = 'dashed';
+  box.dataset.color = 'rule';
+  box.dataset.seed = 'teaser-' + m.slug;
+  box.append(make('p', 'locked-title', 'Unlocks at Level ' + m.tool.level + ' · ' + need + ' points'));
+  const row = make('div', 'locked-row');
+  const bar = make('div', 'locked-bar');
+  bar.dataset.drawn = 'bar';
+  bar.dataset.value = Math.min(1, state.points / need);
+  bar.dataset.seed = 'teaser-bar-' + m.slug;
+  bar.setAttribute('role', 'progressbar');
+  bar.setAttribute('aria-valuemin', '0');
+  bar.setAttribute('aria-valuemax', String(need));
+  bar.setAttribute('aria-valuenow', String(Math.min(state.points, need)));
+  bar.setAttribute('aria-label', 'Points towards Level ' + m.tool.level);
+  row.append(bar, make('span', 'note', state.points + ' of ' + need));
+  box.append(row);
+  wrap.append(box, make('p', 'note', 'Nothing in the lessons is locked.'));
+  return wrap;
+}
+
 /* ---------- One method ---------- */
 function buildMethodPage(slug) {
   const m = methodBySlug(slug);
   if (!m) return buildMethodsList();
+  if (!methodUnlocked(m)) return buildMethodTeaser(m);
   const wrap = make('div', 'text-page');                     // the same grid as About and Privacy
 
   const rule = make('span', 'text-rule');
@@ -84,18 +118,14 @@ function buildMethodPage(slug) {
     main.append(box);
   });
 
-  /* The PenCave tool that goes with the method, and where it stands. */
-  if (m.tool && m.tool.built) {
+  /* The PenCave tool that goes with the method (the page is only shown once it is unlocked). */
+  if (methodToolReady(m)) {
     const box = make('section', 'text-section');
     box.append(make('h2', '', 'In PenCave'));
-    if (m.tool.ready()) {
-      box.append(make('p', '', 'The ' + m.tool.name + ' is ready to use.'));
-      const p = make('p', 'text-action');
-      p.append(methodLink('Open the ' + m.tool.name + ' →', m.tool.href));
-      box.append(p);
-    } else {
-      box.append(make('p', '', 'The ' + m.tool.name + ' unlocks at Level ' + m.tool.level + ' (' + m.tool.points + ' points). This page is free to read, and nothing in the lessons is locked.'));
-    }
+    box.append(make('p', '', 'The ' + m.tool.name + ' is ready to use.'));
+    const p = make('p', 'text-action');
+    p.append(methodLink('Open the ' + m.tool.name + ' →', m.tool.href));
+    box.append(p);
     main.append(box);
   }
 

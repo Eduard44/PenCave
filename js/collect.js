@@ -78,6 +78,7 @@ function openCollect(then) {
     collectPoints();
     box.close();
     if (then) then();
+    if (levelUp && typeof openUnlocks === 'function') openUnlocks(before.level, after.level);   // unlocks.js: a second box listing what the new level gives
   });
   const actions = make('div', 'collect-actions');
   actions.append(go);

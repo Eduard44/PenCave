@@ -39,10 +39,6 @@ function buildTimerLocked(wrap) {
   wrap.append(box);
 
   wrap.append(make('p', 'note', 'Nothing in the lessons is locked.'));
-  /* The method's reading page is free to read at every level (wireframe 6 E). */
-  const read = make('a', 'about-method', 'Read about this method →');
-  read.href = '#methods/timed-drills';
-  wrap.append(read, make('p', 'note', 'Free to read.'));
   return wrap;
 }
 
