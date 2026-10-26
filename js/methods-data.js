@@ -56,7 +56,7 @@ window.PENCAVE_METHODS = [
       { heading: 'How it works',
         text: 'Francesco Cirillo came up with it in the late 1980s as a university student. The name is Italian for tomato, after the tomato-shaped kitchen timer he used.\n\nThe steps: decide on one task. Set the timer, typically for 25 minutes, and work until it rings. Take a short break, typically 5 to 10 minutes. After four rounds, take a longer break, typically 20 to 30 minutes, then start again.' },
       { heading: 'PenCave’s starting numbers',
-        text: 'PenCave starts with 25 minutes of focus, a 5 minute break, a 15 minute long break and 4 rounds. The long break is shorter than the usual 20 to 30 minutes, and every number can be changed to suit you.' },
+        text: 'PenCave starts with 25 minutes of focus, a 5 minute break, a 20 minute long break and 4 rounds. 20 minutes is the short end of the usual 20 to 30 minutes, and every number can be changed to suit you.' },
       { heading: 'What the research says',
         text: 'One 2023 study at a Dutch university compared students who took their own breaks with students who took planned breaks. The students who chose their own breaks studied for longer stretches and reported more tiredness and distraction, and less concentration and motivation. The groups did not differ in mental effort or in finishing the task.\n\nThat study was about students studying, with a small number of people, and it was not about drawing. It suggests planned breaks can help, not that they are needed.' }
     ],

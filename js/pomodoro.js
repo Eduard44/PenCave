@@ -5,7 +5,7 @@
    two separate saves. This file does not depend on which page is open, so the clock keeps
    running while you turn pages.
 
-   THE ROUNDS (with the usual 25 / 5 / 15 / 4)
+   THE ROUNDS (with the usual 25 / 5 / 20 / 4)
        Focus 1 -> Break -> Focus 2 -> Break -> Focus 3 -> Break -> Focus 4 -> Long break -> "Set complete"
    When a part ends, the sound repeats and a pop-up opens until the reader presses OK; OK starts
    the next part by itself. After the long break the pop-up says "Set complete" and asks if they
@@ -35,7 +35,7 @@ const POMO_LIMITS = { focus: [1, 120], brk: [1, 60], long: [1, 60], rounds: [1, 
 
 function freshPomo() {
   return {
-    v: 1, focus: 25, brk: 5, long: 15, rounds: 4,
+    v: 1, focus: 25, brk: 5, long: 20, rounds: 4,
     phase: 'focus', round: 1, status: 'idle', endAt: 0, remaining: 25 * 60000,
     sounds: { focus: { choice: 'chime', volume: 70 }, brk: { choice: 'chime', volume: 70 } }
   };
