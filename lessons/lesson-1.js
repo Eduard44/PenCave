@@ -38,83 +38,83 @@ window.PENCAVE_LESSONS[1] = {
   next: 'Line work',
   pages: [
     {
-      title: '[YOUR TEXT HERE: page 1 heading]',
-      intro: '[YOUR TEXT HERE: two or three sentences. What we are making and why.]',
+      title: "What you need",
+      intro: "All you need is a pencil and some plain paper. Any pencil, any paper, whatever you have at home.",
       frames: [
-        { art: 1, caption: '1. [YOUR TEXT HERE]' },
-        { art: 2, caption: '2. [YOUR TEXT HERE]' },
-        { art: 3, caption: '3. [YOUR TEXT HERE]' }
+        { art: 1, caption: "1. Any pencil." },
+        { art: 2, caption: "2. Any plain paper." },
+        { art: 3, caption: "3. Somewhere flat to draw." }
       ],
       notes: [
-        { heading: '[Margin note heading]', text: '[YOUR TEXT HERE]' },
-        { heading: '[Watch for]', text: '[YOUR TEXT HERE]' }
+        { heading: "Nothing to buy", text: "You don't need to buy anything today. If you want better tools later, you'll know what you're missing." },
+        { heading: "Watch for", text: "Small scraps of paper. A small page makes you draw small and tight, so use a full sheet." }
       ],
       marginArt: 'mistake',
-      rest: '[YOUR TEXT HERE: optional. Delete this line if the page needs no rest note.]'
+      rest: "Put your pencil and paper in front of you before you turn the page."
     },
     {
-      title: '[YOUR TEXT HERE: page 2 heading]',
-      intro: '[YOUR TEXT HERE]',
+      title: "How to hold the pencil",
+      intro: "Hold the pencil loosely and let your arm do the moving, not just your fingers. A tight grip gives tight, shaky lines.",
       frames: [
-        { art: 1, caption: '1. [YOUR TEXT HERE]' },
-        { art: 2, caption: '2. [YOUR TEXT HERE]' },
-        { art: 3, caption: '3. [YOUR TEXT HERE]' }
+        { art: 1, caption: "1. Hold it loosely, don't squeeze." },
+        { art: 2, caption: "2. Let your whole arm move." },
+        { art: 3, caption: "3. The line follows your arm." }
       ],
-      notes: [{ heading: '[Margin note heading]', text: '[YOUR TEXT HERE]' }]
+      notes: [{ heading: "A quick check", text: "If your fingertips go white or your hand starts to ache, you're gripping too hard. Loosen up." }]
     },
     {
-      title: '[YOUR TEXT HERE: page 3 heading]',
-      intro: '[YOUR TEXT HERE]',
+      title: "How to practise",
+      intro: "Short sessions, done often, beat one long one. Ten minutes is plenty to start with. Repeat the same thing and watch what changes over time.",
       frames: [
-        { art: 1, caption: '1. [YOUR TEXT HERE]' },
-        { art: 2, caption: '2. [YOUR TEXT HERE]' }
+        { art: 1, caption: "1. Draw for a short while." },
+        { art: 2, caption: "2. Put it away and come back another day." }
       ],
-      notes: [{ heading: '[Margin note heading]', text: '[YOUR TEXT HERE]' }]
+      notes: [{ heading: "No deadline", text: "Real progress takes weeks, not days. Nobody is waiting for you to finish." }]
     },
     {
       type: 'try',                                   // Guided try: draw along on paper
-      title: '[YOUR TEXT HERE: Guided try heading]',
-      intro: '[YOUR TEXT HERE: what we are about to draw together.]',
+      title: "Warm up a page",
+      intro: "Let's fill one page with loose marks. There's no right way to do it. What matters is that your hand feels relaxed.",
       steps: [
-        '[YOUR TEXT HERE: step 1]',
-        '[YOUR TEXT HERE: step 2]',
-        '[YOUR TEXT HERE: step 3]'
+        "Put a clean page in front of you and hold the pencil loosely.",
+        "Make marks back and forth across the page, moving from your arm. Go quickly if you like. Neatness doesn't matter here.",
+        "Keep going until the page is full, then take a moment to look at it."
       ],
-      notes: [{ heading: '[Margin note heading]', text: '[YOUR TEXT HERE]' }]
+      notes: [{ heading: "Keep it", text: "Hold on to your pages. You'll want to compare them later." }]
     },
     {
       type: 'turn',                                  // Your turn: open exercises, alone
-      title: '[YOUR TEXT HERE: Your turn heading]',
-      intro: '[YOUR TEXT HERE: now you choose. Two or three open exercises.]',
+      title: "Your turn",
+      intro: "Now it's up to you. Pick one, two or all three.",
       exercises: [
-        { title: '[Exercise 1 name]', text: '[YOUR TEXT HERE]', easier: '[YOUR TEXT HERE]', harder: '[YOUR TEXT HERE]' },
-        { title: '[Exercise 2 name]', text: '[YOUR TEXT HERE]', easier: '[YOUR TEXT HERE]', harder: '[YOUR TEXT HERE]' },
-        { title: '[Exercise 3 name]', text: '[YOUR TEXT HERE]', easier: '[YOUR TEXT HERE]', harder: '[YOUR TEXT HERE]' }
+        { title: "Set up your drawing spot", text: "Pick a place where you can draw most days. Leave your pencil and paper there, ready to go.", easier: "Use a table you already use and leave one pencil and one sheet on it.", harder: "Choose a time of day for it as well." },
+        { title: "Plan five short sessions", text: "Pick five days and how long each will be, for example ten minutes. Write them down.", easier: "Start with two days.", harder: "Make them five days in a row." },
+        { title: "Compare a tight and a loose page", text: "Fill one page gripping the pencil tight, then another holding it loosely. Put them side by side and look.", easier: "Fill half a page each.", harder: "Add a third page with a grip in between, and decide which one you like best." }
       ],
-      notes: [{ heading: '[Margin note heading]', text: '[YOUR TEXT HERE]' }]
+      notes: [{ heading: "Your reason", text: "Write one line about why you want to draw, and keep it with your first page." }]
     },
     {
       type: 'practice',                              // Practice: repeat it, counted (not every lesson has one)
-      title: '[YOUR TEXT HERE: Practice heading]',
-      intro: '[YOUR TEXT HERE: the task in a few lines. Name the repetition, for example draw ten lines, then ten more.]',
+      title: "Five warm-up pages",
+      intro: "Repeat the warm-up from before: fill a page with loose marks, moving from your arm. Do five pages, all at once or over a few days.",
       count: 5,                                      // how many blank pages to tick off
-      hint: '[YOUR TEXT HERE: a short line, for example tick each page as you fill it.]',
-      figure: { art: 3, caption: '[YOUR TEXT HERE: what a full page looks like]' },
-      notes: [{ heading: '[Margin note heading]', text: '[YOUR TEXT HERE]' }]
+      hint: "Tick each page as you fill it.",
+      figure: { art: 3, caption: "A page full of warm-up marks." },
+      notes: [{ heading: "Why repeat", text: "Your hand learns by doing the same thing again and again." }]
     },
     {
       type: 'reflect',                               // Reflect: one question + Look first
-      title: '[YOUR TEXT HERE: Reflect heading]',
-      intro: '[YOUR TEXT HERE]',
-      question: '[YOUR TEXT HERE: one short question]',
-      lookFirst: { heading: '[Look first]', text: '[YOUR TEXT HERE: study a real object or drawing and name why it works.]', caption: '[YOUR TEXT HERE: what to look at]' },
-      boxLabel: '[YOUR TEXT HERE: label for the answer box]'
+      title: "What did you notice?",
+      intro: "Take a look at your five pages.",
+      question: "What did you notice about your hand?",
+      lookFirst: { heading: "Look first", text: "Look at the marks you just made. Find one that looks relaxed and one that looks tight. What's different about them?", caption: "Your own warm-up pages." },
+      boxLabel: "What I noticed about my hand"
     },
     {
       type: 'next',                                 // Next: what comes next and why
-      title: '[YOUR TEXT HERE: Next page heading, for example Line work finished]',
-      intro: '[YOUR TEXT HERE: a line or two on what you did in this lesson.]',
-      why: '[YOUR TEXT HERE: why the next lesson follows from this one.]'
+      title: "You've started",
+      intro: "You've set up your space, tried a loose grip and filled five pages.",
+      why: "Next is line work. A loose hand is where clean lines begin."
     }
   ]
 };
