@@ -77,6 +77,21 @@ function buildTextPage(key) {
     main.append(box);
   });
 
+  /* Optional "Sources" block (a page can give a "sources" list in text-data.js). It reuses the
+     look and the link helper of the Learning methods pages (methods.js loads before this file). */
+  if (data.sources && data.sources.length) {
+    const src = make('section', 'text-section text-sources');
+    src.append(make('h2', '', 'Sources'));
+    const list = make('ul', 'method-sources');
+    data.sources.forEach(sc => {
+      const li = make('li');
+      li.append(methodLink(sc.title, sc.url, true));      // external = opens in a new tab
+      list.append(li);
+    });
+    src.append(list);
+    main.append(src);
+  }
+
   wrap.append(rule, short, main, updated);
   return wrap;
 }

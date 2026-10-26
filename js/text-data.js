@@ -44,15 +44,21 @@ window.PENCAVE_TEXT = {
 
   privacy: {
     title: 'Privacy',
-    updated: '[YOUR DATE HERE: for example 24 Oct 2026]',
-    short: '[YOUR TEXT HERE: In short. What PenCave keeps, where, and what it does not collect.]',
+    updated: '25 Oct 2026',
+    short: "PenCave keeps your progress, notes and settings in your own browser, on your own device. It collects nothing: no accounts, no sign-in, no tracking. The website host, GitHub, does log a visitor's IP address when a page loads. That log belongs to GitHub, not to PenCave.",
     sections: [
-      { heading: 'What stays on your device',      text: '[YOUR TEXT HERE: progress, notes, Timer settings and your own sound are kept only in this browser.]' },
-      { heading: 'What we do not collect',         text: '[YOUR TEXT HERE: what PenCave does not collect or hold.]' },
-      { heading: 'Backups and a new device',       text: '[YOUR TEXT HERE: how to download a save file and load it on another device or a cleared browser.]', action: 'download' },
-      { heading: 'Erase everything on this device', text: '[YOUR TEXT HERE: what Erase does, and that it cannot be undone.]', action: 'erase' },
-      { heading: 'What the website host logs',     text: '[YOUR TEXT HERE: written after the privacy research and a check of what the host logs.]', later: true },
-      { heading: 'How to ask about your data',     text: '[YOUR TEXT HERE: only matters if data is ever held. To decide.]', later: true }
+      { heading: "What stays on your device", text: "Your progress, points, finished lessons, notes, calendar marks, Timer and Pomodoro settings, and your own sound if you add one are kept in this browser, on this device. They are saved in the browser's own storage. PenCave does not send them anywhere and does not set cookies.\n\nBecause they live only in this browser, they stay until you erase them or clear your browser's site data. If you clear your history and site data, or open PenCave in a different browser or on a different device, it starts fresh. A save file (see below) is how you bring your progress with you." },
+      { heading: "What we do not collect", text: "PenCave does not collect your name, email address, location or anything you write. There are no accounts, no sign-in, no ads and no analytics or tracking tools. Your notes are never sent to PenCave or to anyone else.\n\nThe Sources links on the Learning methods pages go to other websites. They open only when you click one, and those websites have their own privacy rules." },
+      { heading: "Backups and a new device", text: "On the Your progress page you can download a save file. Your browser makes it and saves it like any other download. It does not go to PenCave. You get two files: a .json file you can load back into PenCave on another device or after clearing your browser, and a .txt file you can read yourself.\n\nLoading a save file also happens in your browser. PenCave reads the file on your device and nothing is uploaded. If you already have progress, PenCave asks before it replaces anything.\n\nYour own sound is not in the save file, so add it again on the new device. The .txt file holds your notes as plain text, so keep it somewhere safe.", action: 'download' },
+      { heading: "Erase everything on this device", text: "The Erase button removes everything PenCave has kept in this browser: progress, points, notes, calendar marks, Timer and Pomodoro settings, and your own sound. It cannot be undone. PenCave asks you first and offers to download your notes before anything is deleted. Save files you already downloaded are not touched; they are on your device and yours to keep or delete. After erasing, PenCave looks like a first visit.", action: 'erase' },
+      { heading: "What the website host logs", text: "PenCave is hosted on GitHub Pages. GitHub's documentation says that when a GitHub Pages site is visited, the visitor's IP address is logged and stored for security purposes, whether or not the visitor is signed in to GitHub. GitHub's general privacy statement describes what else it may log when people use its websites, such as the referring site, the date and time, and device information. It does not give a time limit for how long this is kept for people who only visit a site.\n\nThis happens when any page of PenCave loads, as on any website. It is GitHub's log. PenCave does not add anything to it and does not use it. If PenCave ever moves to a different host, this section will be updated." },
+      { heading: "Questions about your data", text: "PenCave holds no data about you, so there is nothing on its side to look up, correct or delete. What PenCave has kept is in your own browser: you can see it on the Your progress page, download it, or erase it, as described above. For anything GitHub holds, such as the visitor log, you would need to ask GitHub. See its privacy statement under Sources." }
+    ],
+    /* Optional list of sources, shown as a "Sources" block under the sections (same look as on the
+       Learning methods pages). Each one is { title, url }. The links open in a new tab. */
+    sources: [
+      { title: 'GitHub Docs: What is GitHub Pages (see "Data collection")', url: 'https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages' },
+      { title: 'GitHub General Privacy Statement', url: 'https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement' }
     ]
   }
 };
