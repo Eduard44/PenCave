@@ -31,14 +31,14 @@ window.PENCAVE_TEXT = {
 
   about: {
     title: 'About PenCave',
-    updated: '[YOUR DATE HERE: for example 24 Oct 2026]',
-    short: '[YOUR TEXT HERE: In short. Two or three sentences that sum up PenCave.]',
+    updated: '25 Oct 2026',
+    short: "PenCave is a free place to learn to draw, made for absolute beginners. It is a book you flip through in order, and you draw on paper. Real progress takes weeks, and there is no deadline.",
     sections: [
-      { heading: 'Why PenCave exists',    text: '[YOUR TEXT HERE: why you made PenCave.]' },
-      { heading: 'How the book works',    text: '[YOUR TEXT HERE: the book, lessons, pages, Your turn, and the order to take them in.]' },
-      { heading: 'What to expect',        text: '[YOUR TEXT HERE: real progress takes weeks, there is no deadline, nothing is locked in the lessons.]' },
-      { heading: 'Who makes PenCave?',    text: '[YOUR TEXT HERE: a name, or thanks to helpers. To decide.]', later: true },
-      { heading: 'Credit for the roadmap video', text: '[YOUR TEXT HERE: maybe a thank-you and a link to the video or channel. To decide.]', later: true }
+      { heading: "Why PenCave exists", text: "[YOUR TEXT HERE: why you made PenCave. Send it when you're home.]" },
+      { heading: "How the book works", text: "PenCave is a book. Each lesson is a few pages, and the contents page is the only menu. You can choose where to start, but each skill builds on the one before, and every page says what came before and what comes next, so no lesson stands alone.\n\nEvery lesson follows the same rhythm: what we are making and why, then step frames (new lines show in a different pencil colour), a guided try, Your turn, a short Reflect question, and what comes next.\n\nYour turn gives you two or three open exercises to do on your own. They are there so you are not only copying the teacher and then feeling lost.\n\nDraw with pencil and paper, at home. The screen is for reading and following along." },
+      { heading: "What to expect", text: "Real progress takes weeks or months, and there is no deadline. Drawing the same thing many times is the method, so PenCave counts repetition and treats it as effort, not talent. Mistakes are normal, and the lessons show them plainly.\n\nLessons are never locked. You earn points for finishing lessons, trying the exercises, writing notes and coming back, and points are never taken away, however long you are away. Levels unlock extra tools: the Timer first, then the Pomodoro, with more to come." },
+      { heading: "Who makes PenCave?", text: "PenCave is made by Eduard." },
+      { heading: "Credit for the roadmap video", text: "[YOUR TEXT HERE: a thank-you and a link, once you have the link and know how much of the structure came from the video.]", later: true }
     ]
   },
 
