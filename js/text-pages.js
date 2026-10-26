@@ -59,6 +59,14 @@ function buildTextPage(key) {
     box.append(make('h2', '', sec.heading));
     sec.text.split(/\n\s*\n/).forEach(para => box.append(make('p', '', para)));
 
+    /* An optional link under the words ("link: { title, url }" in text-data.js). External, so it
+       opens in a new tab. methodLink comes from methods.js, which loads before this file. */
+    if (sec.link) {
+      const lp = make('p', 'text-action');
+      lp.append(methodLink(sec.link.title, sec.link.url, true));
+      box.append(lp);
+    }
+
     if (sec.action === 'download') {
       const p = make('p', 'text-action');
       p.append(makeDownloadLink('Download my notes'));
