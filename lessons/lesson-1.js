@@ -41,24 +41,24 @@ window.PENCAVE_LESSONS[1] = {
       title: "What you need",
       intro: "All you need is a pencil and some plain paper. Any pencil, any paper, whatever you have at home.",
       frames: [
-        { art: 1, caption: "1. Any pencil." },
-        { art: 2, caption: "2. Any plain paper." },
-        { art: 3, caption: "3. Somewhere flat to draw." }
+        { art: 'l1-desk-1', caption: "1. Any pencil." },
+        { art: 'l1-desk-2', caption: "2. Any plain paper." },
+        { art: 'l1-desk-3', caption: "3. Somewhere flat to draw." }
       ],
       notes: [
         { heading: "Nothing to buy", text: "You don't need to buy anything today. If you want better tools later, you'll know what you're missing." },
         { heading: "Watch for", text: "Small scraps of paper. A small page makes you draw small and tight, so use a full sheet." }
       ],
-      marginArt: 'mistake',
+      marginArt: 'l1-scrap',
       rest: "Put your pencil and paper in front of you before you turn the page."
     },
     {
       title: "How to hold the pencil",
       intro: "Hold the pencil loosely and let your arm do the moving, not just your fingers. A tight grip gives tight, shaky lines.",
       frames: [
-        { art: 1, caption: "1. Hold it loosely, don't squeeze." },
-        { art: 2, caption: "2. Let your whole arm move." },
-        { art: 3, caption: "3. The line follows your arm." }
+        { art: 'l1-arm-1', caption: "1. Hold it loosely, don't squeeze." },
+        { art: 'l1-arm-2', caption: "2. Let your whole arm move." },
+        { art: 'l1-arm-3', caption: "3. The line follows your arm." }
       ],
       notes: [{ heading: "A quick check", text: "If your fingertips go white or your hand starts to ache, you're gripping too hard. Loosen up." }]
     },
@@ -66,8 +66,8 @@ window.PENCAVE_LESSONS[1] = {
       title: "How to practise",
       intro: "Short sessions, done often, beat one long one. Ten minutes is plenty to start with. Repeat the same thing and watch what changes over time.",
       frames: [
-        { art: 1, caption: "1. Draw for a short while." },
-        { art: 2, caption: "2. Put it away and come back another day." }
+        { art: 'l1-days-1', caption: "1. Draw for a short while." },
+        { art: 'l1-days-2', caption: "2. Put it away and come back another day." }
       ],
       notes: [{ heading: "No deadline", text: "Real progress takes weeks, not days. Nobody is waiting for you to finish." }]
     },
@@ -99,7 +99,7 @@ window.PENCAVE_LESSONS[1] = {
       intro: "Repeat the warm-up from before: fill a page with loose marks, moving from your arm. Do five pages, all at once or over a few days.",
       count: 5,                                      // how many blank pages to tick off
       hint: "Tick each page as you fill it.",
-      figure: { art: 3, caption: "A page full of warm-up marks." },
+      figure: { art: 'l1-warmup-page', caption: "A page full of warm-up marks." },
       notes: [{ heading: "Why repeat", text: "Your hand learns by doing the same thing again and again." }]
     },
     {
@@ -107,7 +107,7 @@ window.PENCAVE_LESSONS[1] = {
       title: "What did you notice?",
       intro: "Take a look at your five pages.",
       question: "What did you notice about your hand?",
-      lookFirst: { heading: "Look first", text: "Look at the marks you just made. Find one that looks relaxed and one that looks tight. What's different about them?", caption: "Your own warm-up pages." },
+      lookFirst: { art: 'l1-warmup-page', heading: "Look first", text: "Look at the marks you just made. Find one that looks relaxed and one that looks tight. What's different about them?", caption: "Your own warm-up pages." },
       boxLabel: "What I noticed about my hand"
     },
     {
