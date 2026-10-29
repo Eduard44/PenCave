@@ -24,6 +24,8 @@
       5 for ticking a Your turn exercise (first time only)
       3 for coming back on a new day
       5 for repeating a lesson you have finished before (see "Repeat runs" below)
+      5 for filling every page of a Practice page the first time (beats.js, practice)
+      2 for filling them again after "Do it again", once a day for each Practice page
    Points are never taken away: unticking does not remove them.
    A journal note scores 5 points (rated 1, "just practising") or 8 (rated 2,
    "something outstanding"). Only the FIRST TWO notes of each day score. Extra

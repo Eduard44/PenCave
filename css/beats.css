@@ -76,3 +76,8 @@
 @container (max-width: 900px) {
   .turn-list { grid-template-columns: minmax(0, 1fr); }
 }
+
+/* Practice: the "all pages done" part (shows when every page is ticked) */
+.practice-full { margin: 4px 0 16px; }
+.practice-full p { margin-bottom: 10px; }
+.practice-full[hidden] { display: none; }

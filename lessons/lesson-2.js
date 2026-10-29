@@ -10,83 +10,83 @@ window.PENCAVE_LESSONS[2] = {
   next: 'Simple shapes',
   pages: [
     {
-      title: '[YOUR TEXT HERE: page 1 heading]',
-      intro: '[YOUR TEXT HERE: two or three sentences. What we are making and why.]',
+      title: "One clean stroke",
+      intro: "A clean line is one stroke, drawn in one go. It doesn't have to be perfect. It has to be one line, not a hundred little ones.",
       frames: [
-        { art: 1, caption: '1. [YOUR TEXT HERE]' },
-        { art: 2, caption: '2. [YOUR TEXT HERE]' },
-        { art: 3, caption: '3. [YOUR TEXT HERE]' }
+        { art: 'l2-hairy', caption: "1. Many tiny strokes make a hairy line." },
+        { art: 'l2-clean', caption: "2. One stroke makes a clean line." },
+        { art: 'l2-wobble', caption: "3. If it wobbles, leave it. Draw the next one." }
       ],
       notes: [
-        { heading: '[Margin note heading]', text: '[YOUR TEXT HERE]' },
-        { heading: '[Watch for]', text: '[YOUR TEXT HERE]' }
+        { heading: "Draw from the arm", text: "Same as the warm-up. Move from your arm, not your fingers or your wrist." },
+        { heading: "Watch for", text: "A line drawn from the wrist. It curves because only the wrist moved. Keep your wrist soft and let your arm travel." }
       ],
-      marginArt: 'mistake',
-      rest: '[YOUR TEXT HERE: optional. Delete this line if the page needs no rest note.]'
+      marginArt: 'l2-wrist',
+      rest: "Hold your pencil above the page and trace a line in the air before you turn over."
     },
     {
-      title: '[YOUR TEXT HERE: page 2 heading]',
-      intro: '[YOUR TEXT HERE]',
+      title: "Straight lines",
+      intro: "Start with straight lines. Pick the two ends first, then draw between them.",
       frames: [
-        { art: 1, caption: '1. [YOUR TEXT HERE]' },
-        { art: 2, caption: '2. [YOUR TEXT HERE]' },
-        { art: 3, caption: '3. [YOUR TEXT HERE]' }
+        { art: 'l2-dots', caption: "1. Mark a start and an end." },
+        { art: 'l2-hover', caption: "2. Hover over the line a few times without touching." },
+        { art: 'l2-stroke', caption: "3. Draw it in one stroke." }
       ],
-      notes: [{ heading: '[Margin note heading]', text: '[YOUR TEXT HERE]' }]
+      notes: [{ heading: "Look at the end", text: "Keep your eyes on where the line will end, not on the pencil tip." }]
     },
     {
-      title: '[YOUR TEXT HERE: page 3 heading]',
-      intro: '[YOUR TEXT HERE]',
+      title: "Curved lines",
+      intro: "Curves work the same way. Mark where it starts and ends, hover over it, then draw it in one stroke.",
       frames: [
-        { art: 1, caption: '1. [YOUR TEXT HERE]' },
-        { art: 2, caption: '2. [YOUR TEXT HERE]' }
+        { art: 'l2-curve-hover', caption: "1. Mark a start and an end, and hover over the curve." },
+        { art: 'l2-curve', caption: "2. Draw it in one stroke." }
       ],
-      notes: [{ heading: '[Margin note heading]', text: '[YOUR TEXT HERE]' }]
+      notes: [{ heading: "Start wide", text: "Long, wide curves stay smoother than tight ones. Start big." }]
     },
     {
       type: 'try',                                   // Guided try: draw along on paper
-      title: '[YOUR TEXT HERE: Guided try heading]',
-      intro: '[YOUR TEXT HERE: what we are about to draw together.]',
+      title: "Ten straight, ten curved",
+      intro: "Let's fill a page with lines. Ten straight, then ten curved. One stroke each.",
       steps: [
-        '[YOUR TEXT HERE: step 1]',
-        '[YOUR TEXT HERE: step 2]',
-        '[YOUR TEXT HERE: step 3]'
+        "Draw ten straight lines, each in one stroke. Mark the start and end first if it helps.",
+        "Draw ten curved lines the same way. Hover over each one before you touch down.",
+        "Don't go back over any line. When you're done, look at the page."
       ],
-      notes: [{ heading: '[Margin note heading]', text: '[YOUR TEXT HERE]' }]
+      notes: [{ heading: "Leave the wobbles", text: "A wobbly line you leave alone teaches you more than one you fix." }]
     },
     {
       type: 'turn',                                  // Your turn: open exercises, alone
-      title: '[YOUR TEXT HERE: Your turn heading]',
-      intro: '[YOUR TEXT HERE: now you choose. Two or three open exercises.]',
+      title: "Your turn",
+      intro: "Now it's up to you. Pick one, two or all three.",
       exercises: [
-        { title: '[Exercise 1 name]', text: '[YOUR TEXT HERE]', easier: '[YOUR TEXT HERE]', harder: '[YOUR TEXT HERE]' },
-        { title: '[Exercise 2 name]', text: '[YOUR TEXT HERE]', easier: '[YOUR TEXT HERE]', harder: '[YOUR TEXT HERE]' },
-        { title: '[Exercise 3 name]', text: '[YOUR TEXT HERE]', easier: '[YOUR TEXT HERE]', harder: '[YOUR TEXT HERE]' }
+        { title: "Corner to corner", text: "Mark a dot in each corner of a page. Join one dot to another with a single stroke. Do it for every pair.", easier: "Use three dots.", harder: "Add dots along the edges and join those too." },
+        { title: "A line the length of the page", text: "Draw one long straight line from one edge of the page to the other, in one stroke. Do it five times, in different places.", easier: "Use half the page.", harder: "Draw it without marking the ends first." },
+        { title: "Draw a wave", text: "Draw a long, smooth wave across the page in one stroke. Then draw it again with tighter waves.", easier: "Make the waves big and slow.", harder: "Keep the waves the same height all the way across." }
       ],
-      notes: [{ heading: '[Margin note heading]', text: '[YOUR TEXT HERE]' }]
+      notes: [{ heading: "Count them", text: "Count your lines as you go. The repetition is the practice." }]
     },
     {
       type: 'practice',                              // Practice: repeat it, counted (not every lesson has one)
-      title: '[YOUR TEXT HERE: Practice heading]',
-      intro: '[YOUR TEXT HERE: the task in a few lines. Name the repetition, for example draw ten lines, then ten more.]',
+      title: "Five pages of lines",
+      intro: "Fill a page with lines, ten and then ten more, a mix of straight and curved. Do five pages, all at once or over a few days.",
       count: 5,                                      // how many blank pages to tick off
-      hint: '[YOUR TEXT HERE: a short line, for example tick each page as you fill it.]',
-      figure: { art: 3, caption: '[YOUR TEXT HERE: what a full page looks like]' },
-      notes: [{ heading: '[Margin note heading]', text: '[YOUR TEXT HERE]' }]
+      hint: "Tick each page as you fill it.",
+      figure: { art: 'l2-lines-page', caption: "A page of single-stroke lines." },
+      notes: [{ heading: "Quantity", text: "Quantity does the work. Each page is another chance to draw a cleaner line." }]
     },
     {
       type: 'reflect',                               // Reflect: one question + Look first
-      title: '[YOUR TEXT HERE: Reflect heading]',
-      intro: '[YOUR TEXT HERE]',
-      question: '[YOUR TEXT HERE: one short question]',
-      lookFirst: { heading: '[Look first]', text: '[YOUR TEXT HERE: study a real object or drawing and name why it works.]', caption: '[YOUR TEXT HERE: what to look at]' },
-      boxLabel: '[YOUR TEXT HERE: label for the answer box]'
+      title: "Look at your lines",
+      intro: "Lay your five pages side by side.",
+      question: "Which line is cleanest, and what did you do differently?",
+      lookFirst: { art: 'l2-lines-page', heading: "Look first", text: "Find the best line across your five pages. What made it work? Where did you look, and how did your arm move?", caption: "Your own five pages." },
+      boxLabel: "What I did differently"
     },
     {
       type: 'next',                                 // Next: what comes next and why
-      title: '[YOUR TEXT HERE: Next page heading, for example Line work finished]',
-      intro: '[YOUR TEXT HERE: a line or two on what you did in this lesson.]',
-      why: '[YOUR TEXT HERE: why the next lesson follows from this one.]'
+      title: "Lines finished",
+      intro: "You drew lines in one stroke, straight and curved, from the arm.",
+      why: "Next are simple shapes. Triangles, circles and squares are made of the lines you've been practising."
     }
   ]
 };

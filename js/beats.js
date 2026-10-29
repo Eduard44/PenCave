@@ -94,30 +94,80 @@ const BEATS = {
   /* PRACTICE: repetition made visible. A row of blank "pages" to tick off, and
      one drawing of what a full page looks like.
      Data: count (how many pages, e.g. 5), hint (a short line), figure: { art, caption }
-     The task itself is the page's intro (above). Not every lesson has a Practice page. */
+     The task itself is the page's intro (above). Not every lesson has a Practice page.
+
+     POINTS (decided in Step 8):
+       - Ticking a page earns nothing by itself (it is the count, and it is saved).
+       - Filling ALL the pages the first time earns 5 points (waiting for Collect, like Your turn).
+       - "Do it again" clears the ticks and starts another round. Finishing that round earns 2 points,
+         but only once a day for each Practice page, so repeating always pays and cannot be farmed.
+       - Unticking and re-ticking never pays twice. Nothing is ever taken away.
+     "Do it again" remembers that a new round was started by saving one extra tick (pgagain...),
+     so the save format is the same as before.
+     When the last page is ticked, a short line offers the journal note (the button is just below). */
   practice(page, lesson, n) {
     const count = page.count || 5;
     const wrap = make('div', 'practice');
+    const seedOf = i => 'pg' + lesson + '-' + n + '-' + i;          // the saved name of page i's tick
+    const againFlag = 'pgagain' + lesson + '-' + n;                 // "a new round was started"
+    const firstId = 'practice' + lesson + '-' + n;                  // the first-time award (pays once)
 
     /* Left: the pages to tick, a running count, a hint. */
     const left = make('div', 'practice-left');
     const row = make('div', 'practice-pages');
     let done = 0;                                   // how many pages are already ticked (saved)
-    for (let i = 1; i <= count; i++) if (isTicked('pg' + lesson + '-' + n + '-' + i)) done++;
+    for (let i = 1; i <= count; i++) if (isTicked(seedOf(i))) done++;
     const counter = make('p', 'note practice-count', done + ' of ' + count + ' pages');
+    const ticks = [];
+    const full = make('div', 'practice-full');       // shown when every page is ticked
+    full.setAttribute('role', 'status');
+    const again = make('button', 'btn', 'Do it again');
+    again.type = 'button';
+    again.dataset.drawn = 'box';
+    again.dataset.seed = 'pgagainbtn' + lesson + '-' + n;
+    full.append(make('p', '', 'All ' + count + ' pages done. A note about how it went is worth adding.'), again);
+
+    /* Show or hide the "all done" part, and update the count. */
+    function refresh() {
+      counter.textContent = done + ' of ' + count + ' pages';
+      full.hidden = done < count;
+      if (done >= count) drawAll();                 // the button was hidden, so draw its pencil box now
+    }
+    /* Called when a tick is turned ON and every page is now done: pay what is owed. */
+    function payIfComplete() {
+      if (done < count) return;
+      if (!state.awarded[firstId]) {
+        award(firstId, 5, 'Lesson ' + lesson + ' · Practice');                       // the first time
+      } else if (isTicked(againFlag)) {
+        award(firstId + '-again-' + todayText(), 2, 'Lesson ' + lesson + ' · Practice again');   // a new round, once a day
+        setTick(againFlag, false);
+      }
+    }
     for (let i = 1; i <= count; i++) {
       const cell = make('div', 'practice-cell');
-      const tick = makeTick('Mark page ' + i + ' as done', 'pg' + lesson + '-' + n + '-' + i, 'tick-page', on => {
+      const tick = makeTick('Mark page ' + i + ' as done', seedOf(i), 'tick-page', on => {
         done += on ? 1 : -1;
-        counter.textContent = done + ' of ' + count + ' pages';
+        refresh();
+        if (on) payIfComplete();
       });
+      ticks.push(tick);
       cell.append(tick, make('span', 'note', 'page ' + i));
       row.append(cell);
     }
-    left.append(row, counter);
+    again.addEventListener('click', () => {
+      for (let i = 1; i <= count; i++) setTick(seedOf(i), false);
+      ticks.forEach(t => t.setAttribute('aria-pressed', 'false'));
+      done = 0;
+      setTick(againFlag, true);                     // the next full round counts as "again"
+      refresh();
+      drawAll();
+      ticks[0].focus();
+    });
+    left.append(row, counter, full);
     if (page.hint) left.append(make('p', 'note', page.hint));
     left.append(makeNoteButton(lesson));            // "Add a note to my journal" (journal.js)
     wrap.append(left);
+    full.hidden = done < count;
 
     /* Right: the one main drawing, "what a full page looks like". */
     if (page.figure) {

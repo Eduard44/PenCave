@@ -9,7 +9,7 @@
    Uses lineD, circleD, grainFilter, tidy, COLORS from draw.js.
    ===================================================================== */
 function stepArt(step, seed) {
-  if (typeof step === 'string' && step.indexOf('l1-') === 0) return namedArt(step, seed);   // Lesson 1's own drawings (below)
+  if (typeof step === 'string' && /^l[12]-/.test(step)) return namedArt(step, seed);   // the lessons' own drawings (below)
   const G = COLORS.graphite, B = COLORS.blue, R = COLORS.red, t = tidy();
   /* The three sides of the triangle, as [x1, y1, x2, y2] on a 100 by 120 grid. */
   const base = [20, 100, 80, 100], left = [20, 100, 50, 40], right = [50, 40, 80, 100];
@@ -61,7 +61,17 @@ const L1_ALT = {
   'l1-days-1': 'One sheet of paper with a few quick lines on it: a short session.',
   'l1-days-2': 'Two marked sheets with an empty one between them: coming back another day.',
   'l1-warmup-page': 'A sheet of paper filled with loose back-and-forth marks.',
-  'l1-scrap': 'A small scrap of paper with tight little marks, circled in red.'
+  'l1-scrap': 'A small scrap of paper with tight little marks, circled in red.',
+  'l2-hairy': 'A line made of many tiny overlapping strokes: a hairy line.',
+  'l2-clean': 'The hairy line, faint, and below it one clean line drawn in a single stroke.',
+  'l2-wobble': 'A wobbly line left as it is, and a new clean line drawn below it.',
+  'l2-dots': 'Two dots on the page: the start and the end of a line.',
+  'l2-hover': 'Two dots with a pencil hovering above the paper and a dashed path between them, with an arrow.',
+  'l2-stroke': 'Two dots joined by one straight line, with the pencil at the end.',
+  'l2-curve-hover': 'Two dots with a dashed curved path between them and an arrow, for the pencil to hover along.',
+  'l2-curve': 'Two dots joined by one smooth curved line.',
+  'l2-lines-page': 'A sheet of paper filled with single-stroke lines, straight ones above and curved ones below.',
+  'l2-wrist': 'A dashed straight line that was meant, and the line drawn from the wrist curving away from it, circled in red.'
 };
 
 function namedArt(key, seed) {
@@ -89,7 +99,7 @@ function namedArt(key, seed) {
     const rand = makeRandom(seed + n), k = amp == null ? 0.35 : amp;
     const jittered = pts.map((p, i) => (i === 0 || i === pts.length - 1) ? p : [p[0] + (rand() - 0.5) * 2 * k, p[1] + (rand() - 0.5) * 2 * k]);
     const op = o.op == null ? 1 : o.op;
-    return '<path d="' + smooth(jittered) + '" stroke="' + o.c + '" stroke-width="' + o.w + '" stroke-opacity="' + op + '" fill="none" stroke-linecap="round" stroke-linejoin="round"/>';
+    return '<path d="' + smooth(jittered) + '" stroke="' + o.c + '" stroke-width="' + o.w + '" stroke-opacity="' + op + '"' + (o.dash ? ' stroke-dasharray="' + o.dash + '"' : '') + ' fill="none" stroke-linecap="round" stroke-linejoin="round"/>';
   }
   /* Part of an ellipse: centre c, half-widths rx and ry, tilted by rot, from angle a0 to a1. */
   function ellipse(c, rx, ry, rot, a0, a1, o) {
@@ -170,6 +180,25 @@ function namedArt(key, seed) {
     return curve(pts, o, 0.05) + head(pts[steps], Math.atan2(pts[steps][1] - pts[steps - 1][1], pts[steps][0] - pts[steps - 1][0]), o);
   }
 
+  /* ---- Lesson 2 helpers ---- */
+  function dot(c, o) {
+    return '<path d="M' + c[0] + ' ' + c[1] + ' L' + (c[0] + 0.01) + ' ' + c[1] + '" stroke="' + o.c + '" stroke-width="' + (o.w + 2.6) + '" stroke-opacity="' + (o.op == null ? 1 : o.op) + '" stroke-linecap="round" fill="none"/>';
+  }
+  function bez(a, c, b, steps) {
+    const pts = [];
+    for (let i = 0; i <= steps; i++) { const u = i / steps; pts.push([(1 - u) * (1 - u) * a[0] + 2 * (1 - u) * u * c[0] + u * u * b[0], (1 - u) * (1 - u) * a[1] + 2 * (1 - u) * u * c[1] + u * u * b[1]]); }
+    return pts;
+  }
+  function hairy(a, b, o) {            // many short overlapping strokes along a line
+    const rand = makeRandom(seed + 77), L = len(sub(b, a)), u = unit(sub(b, a)), nn = perp(u);
+    let r = '', x = 0;
+    while (x < L - 4) {
+      const seg = 7 + rand() * 7, p = add(add(a, mul(u, x)), mul(nn, (rand() - 0.5) * 6)), q = add(add(a, mul(u, Math.min(L, x + seg))), mul(nn, (rand() - 0.5) * 5));
+      r += line(p, q, o, 0.3);
+      x += seg * (0.3 + rand() * 0.25);
+    }
+    return r;
+  }
   /* ---- the desk: a table slab, a sheet of paper on it, a pencil lying in front ---- */
   const tableTop = [[16, 20], [84, 20], [100, 86], [0, 86]];
   const deskPaper = [[30, 28], [68, 24], [80, 60], [24, 64]];
@@ -245,6 +274,54 @@ function namedArt(key, seed) {
       body = sheet([[16, 12], [84, 8], [88, 104], [12, 108]], ghost) + sheet([[38, 52], [62, 50], [63, 74], [39, 76]], oldG) +
              marks([[38, 52], [62, 50], [63, 74], [39, 76]], 3, thin) +
              ellipse([50, 63], 21, 20, 0, 0, Math.PI * 2.08, { c: R, w: 1.6 });
+      break;
+
+    /* ---- Lesson 2: line work ---- */
+    case 'l2-hairy': body = hairy([10, 60], [90, 60], { c: B, w: 1.8 }); break;
+    case 'l2-clean': body = hairy([10, 36], [90, 36], { c: G, w: 1.2, op: GHOST }) + line([10, 80], [90, 80], blue, 0.5); break;
+    case 'l2-wobble':
+      body = curve([[10, 40], [24, 45], [38, 37], [52, 46], [66, 38], [80, 45], [90, 40]], oldG, 0.4) +
+             line([10, 84], [90, 84], blue, 0.5) + arrow([50, 54], [50, 72], arrowBlue);
+      break;
+    case 'l2-dots': body = dot([14, 62], blue) + dot([86, 62], blue); break;
+    case 'l2-hover':
+      body = dot([14, 62], oldG) + dot([86, 62], oldG) +
+             curve([[14, 52], [86, 52]], { c: B, w: 1.8, dash: '3 4' }, 0.1) + head([86, 52], 0, arrowBlue) +
+             pencil([2, 8], [14, 52], 2.4, oldG);
+      break;
+    case 'l2-stroke':
+      body = dot([14, 62], oldG) + dot([86, 62], oldG) + line([14, 62], [86, 62], { c: B, w: NEW + 0.4 }, 0.5) +
+             pencil([74, 14], [86, 62], 2.4, oldG);
+      break;
+    case 'l2-curve-hover':
+      body = dot([14, 90], oldG) + dot([86, 90], oldG) +
+             curve(bez([14, 80], [50, 20], [86, 80], 14), { c: B, w: 1.8, dash: '3 4' }, 0.1) + head([86, 80], 1.1, arrowBlue) +
+             pencil([2, 30], [14, 80], 2.4, oldG);
+      break;
+    case 'l2-curve':
+      body = dot([14, 90], oldG) + dot([86, 90], oldG) +
+             curve(bez([14, 90], [50, 20], [86, 90], 14), { c: B, w: NEW + 0.4 }, 0.15) +
+             pencil([74, 34], [86, 90], 2.4, oldG);
+      break;
+    case 'l2-lines-page': {
+      const pg = [[22, 10], [78, 6], [82, 108], [18, 112]];
+      body = sheet(pg, oldG);
+      const L = f => add(pg[0], mul(sub(pg[3], pg[0]), f)), Rr = f => add(pg[1], mul(sub(pg[2], pg[1]), f));
+      for (let i = 0; i < 6; i++) {
+        const a = L(0.1 + i * 0.07), b = Rr(0.1 + i * 0.07 + (i % 2 ? 0.012 : -0.012));
+        body += line(add(a, mul(sub(b, a), 0.12)), sub(b, mul(sub(b, a), 0.12)), thin, 0.5);
+      }
+      for (let i = 0; i < 4; i++) {
+        const a = L(0.6 + i * 0.1), b = Rr(0.6 + i * 0.1), d = sub(b, a);
+        const a2 = add(a, mul(d, 0.12)), b2 = sub(b, mul(d, 0.12)), mid = add(mul(add(a2, b2), 0.5), [0, i % 2 ? 7 : -7]);
+        body += curve(bez(a2, mid, b2, 10), thin, 0.2);
+      }
+      break;
+    }
+    case 'l2-wrist':
+      body = curve([[12, 50], [88, 50]], { c: G, w: 1.4, dash: '3 4', op: 0.6 }, 0.1) +
+             curve(bez([12, 50], [58, 26], [88, 82], 14), oldG, 0.3) +
+             ellipse([86, 78], 11, 10, 0, 0, Math.PI * 2.08, { c: R, w: 1.6 }) + dot([12, 50], thin);
       break;
     default: body = polygon([[20, 30], [80, 30], [80, 90], [20, 90]], oldG);
   }
